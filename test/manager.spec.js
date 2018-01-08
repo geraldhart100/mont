@@ -1,15 +1,30 @@
 import test from 'ava'
 
-const Monk = require('../lib')
+import { MongoDBServer } from 'mongomem'
 
-const db = new Monk('127.0.0.1/monk')
-db.addMiddleware(require('monk-middleware-debug'))
+import debugMiddleware from 'monk-middleware-debug'
+
+import Mont from '..'
+
+test.before(MongoDBServer.start)
+
+test.beforeEach(async t => {
+  const url = await MongoDBServer.getConnectionString()
+
+  const db = new Mont(url)
+  db.addMiddleware(debugMiddleware)
+
+  t.context = { db }
+})
 
 test('caching collections', (t) => {
+  const { db } = t.context
+
   const a = 'cached-' + Date.now()
   const b = 'not-' + a
 
   t.is(db.get(a), db.get(a), 'cached')
+
   t.not(
     db.get(b, { cache: false }),
     db.get(b, { cache: false }),

@@ -1,21 +1,25 @@
 import test from 'ava'
 
-const Monk = require('../lib')
+import { MongoDBServer } from 'mongomem'
 
-const db = new Monk('127.0.0.1/monk')
-db.addMiddleware(require('monk-middleware-debug'))
+import debugMiddleware from 'monk-middleware-debug'
+
+import Mont from '..'
+
+test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
-  const col = db.get('test-col-' + Date.now(), { type: 'users' })
-  t.context = { col }
-})
+  const url = await MongoDBServer.getConnectionString()
 
-test.afterEach.always(async t => {
-  const { col } = t.context
-  return col.drop()
+  const db = new Mont(url)
+  db.addMiddleware(debugMiddleware)
+
+  t.context = { db }
 })
 
 test('ensure indexes', async t => {
+  const { db } = t.context
+
   const options = {
     indexes: [
       {
@@ -28,7 +32,7 @@ test('ensure indexes', async t => {
     ]
   }
 
-  const col = db.get('index-' + Date.now(), options)
+  const col = db.get('indexxx', options)
 
   await col
     .indexes()
@@ -56,7 +60,9 @@ test('ensure indexes', async t => {
 
 
 test('options > should allow defaults', async t => {
-  const { col } = t.context
+  const { db } = t.context
+
+  const col = db.get('optsss')
 
   await col
     .insert([
