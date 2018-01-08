@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "http-errors": "^1.6.2",
+    "monet": "^0.8.10",
     "monk": "^6.0.5",
     "monk-middleware-wait-for-connection": "^0.2.0",
     "mont-middlewares-ensure-id": "0.0.1",
