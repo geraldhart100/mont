@@ -1,18 +1,22 @@
 import test from 'ava'
 
-const Monk = require('../lib')
+import { MongoDBServer } from 'mongomem'
 
-const db = new Monk('127.0.0.1/monk')
-db.addMiddleware(require('monk-middleware-debug'))
+import debugMiddleware from 'monk-middleware-debug'
+
+import Mont from '..'
+
+test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
-  const col = db.get('test-col-' + Date.now(), { type: 'users' })
-  t.context = { col }
-})
+  const url = await MongoDBServer.getConnectionString()
 
-test.afterEach.always(async t => {
-  const { col } = t.context
-  return col.drop()
+  const db = new Mont(url)
+  db.addMiddleware(debugMiddleware)
+
+  const col = db.get('persons', { type: 'users' })
+
+  t.context = { db, col }
 })
 
 test('insert', async t => {
@@ -596,6 +600,8 @@ test('dropIndexes', async t => {
 })
 
 test('drop', async t => {
+  const { db } = t.context
+
   await db
     .get('dropDB-' + Date.now())
     .drop()
@@ -615,146 +621,16 @@ test('stats', async t => {
     })
 })
 
-/**
- * Original tests
- */
+test('bulkWrite', async t => {
+  const { col } = t.context
 
-test.skip('find > should return the raw cursor', (t) => {
-  const query = { stream: 3 }
-  return users.insert([{ stream: 3 }, { stream: 3 }, { stream: 3 }, { stream: 3 }]).then(() => {
-    return users.find(query, {rawCursor: true})
-      .then((cursor) => {
-        t.truthy(cursor.close)
-        t.truthy(cursor.pause)
-        t.truthy(cursor.resume)
-        cursor.close()
-      })
-  })
-})
-
-test.skip('find > should work with streaming', (t) => {
-  const query = { stream: 1 }
-  let found = 0
-  return users.insert([{ stream: 1 }, { stream: 1 }, { stream: 1 }, { stream: 1 }]).then(() => {
-    return users.find(query)
-      .each((doc) => {
-        t.is(doc.stream, 1)
-        found++
-      })
-      .then(() => {
-        t.is(found, 4)
-      })
-  })
-})
-
-test.skip('find > should work with streaming option', (t) => {
-  const query = { stream: 2 }
-  let found = 0
-  return users.insert([{ stream: 2 }, { stream: 2 }, { stream: 2 }, { stream: 2 }]).then(() => {
-    return users.find(query, { stream: true })
-      .each((doc) => {
-        t.is(doc.stream, 2)
-        found++
-      })
-      .then(() => {
-        t.is(found, 4)
-      })
-  })
-})
-
-test.skip('find > should work with streaming option without each', (t) => {
-  const query = { stream: 5 }
-  let found = 0
-  return users.insert([{ stream: 5 }, { stream: 5 }, { stream: 5 }, { stream: 5 }]).then(() => {
-    return users.find(query, {
-      stream (doc) {
-        t.is(doc.stream, 5)
-        found++
-      }
-    })
-    .then(() => {
-      t.is(found, 4)
-    })
-  })
-})
-
-test.skip('find > should allow stream cursor destroy', (t) => {
-  const query = { cursor: { $exists: true } }
-  let found = 0
-  return users.insert([{ cursor: true }, { cursor: true }, { cursor: true }, { cursor: true }]).then(() => {
-    return users.find(query)
-      .each((doc, {close}) => {
-        t.not(doc.cursor, null)
-        found++
-        if (found === 2) close()
-      })
-      .then(() => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            t.is(found, 2)
-            resolve()
-          }, 100)
-        })
-      })
-  })
-})
-
-test.skip('find > should allow stream cursor destroy even when paused', (t) => {
-  const query = { cursor: { $exists: true } }
-  let found = 0
-  return users.insert([{ cursor: true }, { cursor: true }, { cursor: true }, { cursor: true }]).then(() => {
-    return users.find(query)
-      .each((doc, {close, pause, resume}) => {
-        pause()
-        t.not(doc.cursor, null)
-        found++
-        if (found === 2) return close()
-        resume()
-      })
-      .then(() => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            t.is(found, 2)
-            resolve()
-          }, 100)
-        })
-      })
-  })
-})
-
-test.skip('find > stream pause and continue', (t) => {
-  const query = { stream: 4 }
-  return users.insert([{ stream: 4 }, { stream: 4 }, { stream: 4 }, { stream: 4 }]).then(() => {
-    const start = Date.now()
-    let index = 0
-    return users.find(query)
-      .each((doc, {pause, resume}) => {
-        pause()
-        const duration = Date.now() - start
-        t.true(duration > index * 1000)
-        setTimeout(() => {
-          index += 1
-          resume()
-        }, 1000)
-      })
-      .then(() => {
-        t.is(index, 4)
-        const duration = Date.now() - start
-        t.true(duration > 4000)
-      })
-  })
-})
-
-test.skip('bulkWrite', (t) => {
-  return users.bulkWrite([
+  const b = [
     { insertOne: { document: { bulkWrite: 1 } } }
-  ]).then((r) => {
-    t.is(r.nInserted, 1)
-  })
-})
+  ]
 
-test.skip.cb('bulkWrite > callback', (t) => {
-  users.bulkWrite([
-    { insertOne: { document: { bulkWrite: 2 } } }
-  ], t.end)
+  await col
+    .bulkWrite(b)
+    .then(res => {
+      t.is(res.nInserted, 1)
+    })
 })

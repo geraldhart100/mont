@@ -1,62 +1,26 @@
 import test from 'ava'
 
-const Monk = require('../lib')
+import { MongoDBServer } from 'mongomem'
 
-const db = new Monk('127.0.0.1/monk')
-db.addMiddleware(require('monk-middleware-debug'))
+import debugMiddleware from 'monk-middleware-debug'
+
+import Mont from '..'
+
+test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
-  const col = db.get('test-col-' + Date.now(), { type: 'users' })
-  t.context = { col }
+  const url = await MongoDBServer.getConnectionString()
+
+  const db = new Mont(url)
+  db.addMiddleware(debugMiddleware)
+
+  t.context = { db }
 })
-
-test.afterEach.always(async t => {
-  const { col } = t.context
-  return col.drop()
-})
-
-test('ensure indexes', async t => {
-  const options = {
-    indexes: [
-      {
-        key: {
-          id: 1,
-          type: 1
-        },
-        unique: true
-      }
-    ]
-  }
-
-  const col = db.get('index-' + Date.now(), options)
-
-  await col
-    .indexes()
-    .then(indexes => {
-      const index = indexes.id_1_type_1
-      t.not(index, undefined, 'accept indexes array')
-    })
-
-  await col
-    .dropIndexes()
-    .then(col.indexes)
-    .then(indexes => {
-      const index = indexes.id_1_type_1
-      t.is(index, undefined, 'runs once on init')
-    })
-
-  const col2 = db.get('index-' + Date.now())
-
-  await col
-    .insert({})
-    .then(res => {
-      t.pass('works fine with no indexes')
-    })
-})
-
 
 test('options > should allow defaults', async t => {
-  const { col } = t.context
+  const { db } = t.context
+
+  const col = db.get('optsss')
 
   await col
     .insert([

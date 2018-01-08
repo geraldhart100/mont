@@ -1,20 +1,22 @@
 {
   "name": "mont",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Monk mirror",
   "main": "lib/index.js",
   "scripts": {
-    "test": "ava -s"
+    "test": "ava"
   },
   "author": "Gerald Hart",
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.24.0",
     "lerna": "^2.5.1",
+    "mongomem": "^0.1.9",
     "monk-middleware-debug": "^0.2.0"
   },
   "dependencies": {
     "http-errors": "^1.6.2",
+    "monet": "^0.8.10",
     "monk": "^6.0.5",
     "monk-middleware-wait-for-connection": "^0.2.0",
     "mont-middlewares-ensure-id": "0.0.1",
@@ -22,5 +24,11 @@
     "mont-middlewares-format-args": "0.0.1",
     "mont-middlewares-format-options": "0.0.1",
     "yiwn": "0.0.1"
+  },
+  "ava": {
+    "source": [
+      "lib/**/*.js",
+      "middlewares/lib/**/*.js"
+    ]
   }
 }
