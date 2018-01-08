@@ -11,6 +11,7 @@
   "devDependencies": {
     "ava": "^0.24.0",
     "lerna": "^2.5.1",
+    "mongomem": "^0.1.9",
     "monk-middleware-debug": "^0.2.0"
   },
   "dependencies": {
