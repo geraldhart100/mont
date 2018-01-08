@@ -621,6 +621,20 @@ test('stats', async t => {
     })
 })
 
+test('bulkWrite', async t => {
+  const { col } = t.context
+
+  const b = [
+    { insertOne: { document: { bulkWrite: 1 } } }
+  ]
+
+  await col
+    .bulkWrite(b)
+    .then(res => {
+      t.is(res.nInserted, 1)
+    })
+})
+
 /**
  * Original tests
  */
@@ -749,18 +763,4 @@ test.skip('find > stream pause and continue', (t) => {
         t.true(duration > 4000)
       })
   })
-})
-
-test.skip('bulkWrite', (t) => {
-  return users.bulkWrite([
-    { insertOne: { document: { bulkWrite: 1 } } }
-  ]).then((r) => {
-    t.is(r.nInserted, 1)
-  })
-})
-
-test.skip.cb('bulkWrite > callback', (t) => {
-  users.bulkWrite([
-    { insertOne: { document: { bulkWrite: 2 } } }
-  ], t.end)
 })
