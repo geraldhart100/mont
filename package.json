@@ -4,7 +4,7 @@
   "description": "Monk mirror",
   "main": "lib/index.js",
   "scripts": {
-    "test": "ava -s"
+    "test": "ava"
   },
   "author": "Gerald Hart",
   "license": "MIT",
@@ -23,5 +23,11 @@
     "mont-middlewares-format-args": "0.0.1",
     "mont-middlewares-format-options": "0.0.1",
     "yiwn": "0.0.1"
+  },
+  "ava": {
+    "source": [
+      "lib/**/*.js",
+      "middlewares/lib/**/*.js"
+    ]
   }
 }
