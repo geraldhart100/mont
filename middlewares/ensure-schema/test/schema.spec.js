@@ -1,26 +1,23 @@
 import test from 'ava'
 
-import schema from '../lib/schema'
+import { validate } from '../lib/schema'
+
+const validateEntity = validate('entity.json')
 
 test('identifier', async t => {
-  const x1 = schema
-    .validate({ id: 'a', type: 'chars' })
+  const x1 = validateEntity({ id: 'a', type: 'chars' })
     .right()
 
   t.is(x1.id, 'a', 'provided id')
   t.is(x1.type, 'chars', 'provided type')
 
-  const options = { context: { type: 'things' } }
-
-  const x2 = schema
-    .validate({ }, options)
+  const x2 = validateEntity({ })
     .right()
 
   t.is(typeof x2.id, 'string', 'generate id')
   t.is(x2.type, 'entities', 'default type')
 
-  const x3 = schema
-    .validate({ id: 'b', stats: 1 })
+  const x3 = validateEntity({ id: 'b', stats: 1 })
     .right()
 
   t.is(x3.id, 'b')
@@ -28,13 +25,12 @@ test('identifier', async t => {
 })
 
 test('refs', async t => {
-  const r1 = schema
-    .validate({
-      refs: {
-        a: { id: 'a', type: 'A', extra: 'x' }
-      }
-    })
-    .right()
+  const r1 = validateEntity({
+    refs: {
+      a: { id: 'a', type: 'A', extra: 'x' }
+    }
+  })
+  .right()
 
   t.is(r1.refs.a.id, 'a')
   t.is(r1.refs.a.type, 'A')
@@ -42,32 +38,28 @@ test('refs', async t => {
 
   // errors
 
-  const res2 = schema
-    .validate({
-      refs: {
-        a: { id: 'a' }
-      }
-    })
+  const res2 = validateEntity({
+    refs: {
+      a: { id: 'a' }
+    }
+  })
 
   t.true(res2.isLeft(), 'require both type/id')
 
-  const res3 = schema
-    .validate({ refs: 'exo' })
+  const res3 = validateEntity({ refs: 'exo' })
 
   t.true(res3.isLeft(), '`refs` should be object')
 })
 
 
 test('resource', async t => {
-  const res1 = schema
-    .validate({ id: 'a', type: 'chars' })
+  const res1 = validateEntity({ id: 'a', type: 'chars' })
     .right()
 
   t.is(res1.id, 'a', 'provided id')
   t.is(res1.type, 'chars', 'provided type')
 
-  const res2 = schema
-    .validate({
+  const res2 = validateEntity({
       id: 'b',
       body: { b: 1 },
       meta: { b: 2 },
@@ -83,15 +75,21 @@ test('resource', async t => {
   t.is(res2.stats, undefined, 'strip extra')
 })
 
-test.failing('resources array', async t => {
-  const res = schema
-    .validate([
-      { id: 'a', type: 'chars' },
-      { id: 'b' }
+test('resources array', async t => {
+  const schema = {
+    type: 'array',
+    items: {
+      $ref: 'entity.json#/definitions/identity'
+    }
+  }
+
+  const res = validate(schema, [
+      { id: 'a', type: 'entities' },
+      { id: 'b' },
+      { type: 'entities' }
     ])
     .right()
 
-  console.log(res)
-
-  t.is(res.length, 2, 'support array of resources')
+  t.is(res.length, 3, 'support array of resources')
+  t.is(typeof res[2].id, 'string')
 })

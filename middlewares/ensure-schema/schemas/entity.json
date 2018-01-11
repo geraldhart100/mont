@@ -1,6 +1,35 @@
 {
+  "$id": "entity.json",
   "definitions": {
     "identifier": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "identity": {
+      "allOf": [
+        { "$ref": "#/definitions/identifier" },
+        {
+          "dynamicDefaults": {
+            "id": "shortid"
+          },
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "entities"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "reference": {
       "type": "object",
       "properties": {
         "id": {
@@ -22,14 +51,9 @@
     },
     "refs": {
       "type": "object",
-      "properties": {
-        "a": {
-          "$ref": "#/definitions/identifier"
-        }
-      },
       "patternProperties": {
         "^(.*)$": {
-          "$ref": "#/definitions/identifier"
+          "$ref": "#/definitions/reference"
         }
       },
       "additionalProperties": false
@@ -37,7 +61,7 @@
     "members": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/identifier"
+        "$ref": "#/definitions/identity"
       },
       "uniqueItems": true
     },

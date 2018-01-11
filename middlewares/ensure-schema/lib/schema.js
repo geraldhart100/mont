@@ -1,5 +1,9 @@
 const sqem = require('sqem')
 
-const schema = require('../schemas/entity.json')
+const env = require('sqem/lib/ajv')
 
-module.exports.validate = sqem(schema)
+const entity = require('../schemas/entity')
+
+env.addSchema(entity)
+
+module.exports.validate = sqem
