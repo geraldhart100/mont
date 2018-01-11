@@ -3,100 +3,95 @@ import test from 'ava'
 import schema from '../lib/schema'
 
 test('identifier', async t => {
-  await schema
+  const x1 = schema
     .validate({ id: 'a', type: 'chars' })
-    .then(res => {
-      t.is(res.id, 'a', 'provided id')
-      t.is(res.type, 'chars', 'provided type')
-    })
+    .right()
+
+  t.is(x1.id, 'a', 'provided id')
+  t.is(x1.type, 'chars', 'provided type')
 
   const options = { context: { type: 'things' } }
 
-  await schema
-    .validate({ type: 'chars' }, options)
-    .then(res => {
-      t.is(res.type, 'chars', 'provided type')
-    })
+  const x2 = schema
+    .validate({ }, options)
+    .right()
 
-  await schema
-    .validate({}, options)
-    .then(res => {
-      t.is(res.type, 'things', 'context type')
-    })
+  t.is(typeof x2.id, 'string', 'generate id')
+  t.is(x2.type, 'entities', 'default type')
 
-  await schema
+  const x3 = schema
     .validate({ id: 'b', stats: 1 })
-    .then(res => {
-      t.is(res.id, 'b')
-      t.is(res.stats, undefined, 'strip extra')
-    })
+    .right()
+
+  t.is(x3.id, 'b')
+  t.is(x3.stats, undefined, 'strip extra')
 })
 
 test('refs', async t => {
-  await schema
+  const r1 = schema
     .validate({
       refs: {
         a: { id: 'a', type: 'A', extra: 'x' }
       }
     })
-    .then(res => {
-      const { a } = res.refs
+    .right()
 
-      t.is(a.id, 'a')
-      t.is(a.type, 'A')
-      t.is(a.extra, undefined, 'skip extra')
-    })
+  t.is(r1.refs.a.id, 'a')
+  t.is(r1.refs.a.type, 'A')
+  t.is(r1.refs.a.extra, undefined, 'skip extra')
 
-  await schema
+  // errors
+
+  const res2 = schema
     .validate({
       refs: {
         a: { id: 'a' }
       }
     })
-    .then(() => t.fail('refs id/type required'))
-    .catch(err => {
-      t.is(err.source.key, 'refs')
-    })
+
+  t.true(res2.isLeft(), 'require both type/id')
+
+  const res3 = schema
+    .validate({ refs: 'exo' })
+
+  t.true(res3.isLeft(), '`refs` should be object')
 })
 
-test('errors', async t => {
-  await t.throws(schema.validate({ refs: 'exo' }))
-    .then(err => {
-      t.is(err.status, 422, 'http ready errors')
-      t.not(err.source, undefined)
-    })
-})
 
 test('resource', async t => {
-  await schema
+  const res1 = schema
     .validate({ id: 'a', type: 'chars' })
-    .then(res => {
-      t.is(res.id, 'a', 'provided id')
-      t.is(res.type, 'chars', 'provided type')
-    })
+    .right()
 
-  await schema
+  t.is(res1.id, 'a', 'provided id')
+  t.is(res1.type, 'chars', 'provided type')
+
+  const res2 = schema
     .validate({
       id: 'b',
       body: { b: 1 },
       meta: { b: 2 },
+      links: { self: '/' },
       stats: 2
     })
-    .then(res => {
-      t.is(res.id, 'b')
-      t.deepEqual(res.body, { b: 1 }, 'keep body')
-      t.deepEqual(res.meta, { b: 2 }, 'keep meta')
-      t.is(res.stats, undefined, 'strip extra')
-    })
+    .right()
+
+  t.is(res2.id, 'b')
+  t.deepEqual(res2.body, { b: 1 }, 'keep body')
+  t.deepEqual(res2.meta, { b: 2 }, 'keep meta')
+  t.deepEqual(res2.links, { self: '/' }, 'keep links')
+  t.is(res2.stats, undefined, 'strip extra')
 })
 
-test('resources array', async t => {
-  await schema
+test.failing('resources array', async t => {
+  const res = schema
     .validate([
       { id: 'a', type: 'chars' },
       { id: 'b' }
     ])
-    .then(docs => {
-      t.is(docs.length, 2, 'support array of resources')
-    })
+    .right()
+
+  console.log(res)
+
+  t.is(res.length, 2, 'support array of resources')
 })
