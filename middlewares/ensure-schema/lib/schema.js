@@ -1,11 +1,43 @@
+const {
+  curry,
+  evolve,
+  propOr,
+  assoc,
+  assocPath,
+  compose
+} = require('ramda')
+
 const sqem = require('sqem')
 
 const env = require('sqem/lib/ajv')
 
-const core = require('../schemas/core')
-const entity = require('../schemas/entity')
+env
+  .addSchema(require('../schemas/core.json'))
+  .addSchema(require('../schemas/default.json'))
 
-env.addSchema(core)
-env.addSchema(entity)
+const ensureDynamicDefaults = assocPath(['dynamicDefaults', 'id'], 'shortid')
 
-module.exports.validate = sqem
+const ensurePropId = assocPath(['properties', 'id', 'type'], 'string')
+
+const ensurePropType = S => {
+  const value = {
+    const: S.$id,
+    default: S.$id
+  }
+  return assocPath(['properties', 'type'], value, S)
+}
+
+const stripAdditional = assoc('additionalProperties', false)
+
+const evolveSchema = compose(
+  ensureDynamicDefaults,
+  ensurePropId,
+  ensurePropType,
+  stripAdditional
+)
+
+module.exports.validate = curry(
+  (schema, data) => {
+    return sqem(evolveSchema(schema), data)
+  }
+)

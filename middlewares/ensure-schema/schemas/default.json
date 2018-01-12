@@ -1,7 +1,11 @@
 {
-  "$id": "entities",
+  "$id": "/default",
   "type": "object",
   "properties": {
+    "type": {
+      "const": "entities",
+      "default": "entities"
+    },
     "body": {
       "$ref": "/core#/definitions/body"
     },
@@ -14,5 +18,6 @@
     "links": {
       "$ref": "/core#/definitions/links"
     }
-  }
+  },
+  "additionalProperties": false
 }
