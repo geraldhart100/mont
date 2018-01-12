@@ -1,6 +1,6 @@
 const FN = require('yiwn/full')
 
-const schema = require('./schema')
+const cast = require('./cast')
 
 module.exports = function () {
 
