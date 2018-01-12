@@ -19,5 +19,6 @@
     "links": {
       "$ref": "/core#/definitions/links"
     }
-  }
+  },
+  "additionalProperties": false
 }

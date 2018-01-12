@@ -64,7 +64,8 @@ const allFromType = type => {
           }
         }
       }
-    }
+    },
+    additionalProperties: true
   }
 }
 

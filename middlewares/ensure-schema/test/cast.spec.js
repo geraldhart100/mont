@@ -9,8 +9,10 @@ test('data obj', t => {
     data: {
       body: {
         name: 'Exo'
-      }
-    }
+      },
+      extra: 1
+    },
+    extra: 2
   }
 
   cast(type, args)
@@ -19,6 +21,9 @@ test('data obj', t => {
       x => {
         t.not(x.data.id, undefined, 'ensure id')
         t.is(x.data.type, 'users', 'ensure type')
+
+        t.is(x.data.extra, undefined, 'strip extra')
+        t.is(x.extra, 2, 'allow extra on root data')
       }
     )
 })
