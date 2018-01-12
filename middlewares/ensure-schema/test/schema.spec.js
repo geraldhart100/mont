@@ -2,94 +2,134 @@ import test from 'ava'
 
 import { validate } from '../lib/schema'
 
-const validateEntity = validate('entity.json')
+const validateEntity = validate('entity')
 
 test('identifier', async t => {
-  const x1 = validateEntity({ id: 'a', type: 'chars' })
-    .right()
+  validateEntity({
+    id: 'a',
+    type: 'entities'
+  })
+  .cata(
+    e => t.fail(e),
+    x => {
+      t.is(x.id, 'a', 'provided id')
+      t.is(x.type, 'entities', 'provided type')
+    }
+  )
 
-  t.is(x1.id, 'a', 'provided id')
-  t.is(x1.type, 'chars', 'provided type')
+  validateEntity({
+    extra: 1
+  })
+  .cata(
+    e => t.fail(e),
+    x => {
+      t.is(typeof x.id, 'string', 'generate id')
+      t.is(x.type, 'entities', 'default type')
 
-  const x2 = validateEntity({ })
-    .right()
-
-  t.is(typeof x2.id, 'string', 'generate id')
-  t.is(x2.type, 'entities', 'default type')
-
-  const x3 = validateEntity({ id: 'b', stats: 1 })
-    .right()
-
-  t.is(x3.id, 'b')
-  t.is(x3.stats, undefined, 'strip extra')
+      t.is(x.extra, undefined, 'strip extra')
+    }
+  )
 })
 
 test('refs', async t => {
-  const r1 = validateEntity({
+  validateEntity({
     refs: {
       a: { id: 'a', type: 'A', extra: 'x' }
     }
   })
-  .right()
+  .cata(
+    e => t.fail(),
+    x => {
+      const { a } = x.refs
 
-  t.is(r1.refs.a.id, 'a')
-  t.is(r1.refs.a.type, 'A')
-  t.is(r1.refs.a.extra, undefined, 'skip extra')
+      t.is(a.id, 'a')
+      t.is(a.type, 'A')
+      t.is(a.extra, undefined, 'skip extra')
+    }
+  )
+
 
   // errors
 
-  const res2 = validateEntity({
+  validateEntity({
     refs: {
       a: { id: 'a' }
     }
   })
+  .cata(
+    e => t.pass(),
+    x => t.fail('require both id, type')
+  )
 
-  t.true(res2.isLeft(), 'require both type/id')
-
-  const res3 = validateEntity({ refs: 'exo' })
-
-  t.true(res3.isLeft(), '`refs` should be object')
+  validateEntity({ refs: 'exo' })
+    .cata(
+      e => t.pass(),
+      x => t.fail('refs should be obj')
+    )
 })
 
 
 test('resource', async t => {
-  const res1 = validateEntity({ id: 'a', type: 'chars' })
-    .right()
+  validateEntity({
+    id: 'a',
+    type: 'entities'
+  })
+  .cata(
+    t.fail,
+    x => {
+      t.is(x.id, 'a', 'provided id')
+      t.is(x.type, 'entities', 'provided type')
+    }
+  )
 
-  t.is(res1.id, 'a', 'provided id')
-  t.is(res1.type, 'chars', 'provided type')
+  validateEntity({
+    id: 'b',
+    body: { b: 1 },
+    meta: { b: 2 },
+    links: { self: '/' },
+    stats: 2
+  })
+  .cata(
+    t.fail,
+    x => {
+      t.is(x.id, 'b')
 
-  const res2 = validateEntity({
-      id: 'b',
-      body: { b: 1 },
-      meta: { b: 2 },
-      links: { self: '/' },
-      stats: 2
-    })
-    .right()
+      t.deepEqual(x.body, { b: 1 }, 'keep body')
+      t.deepEqual(x.meta, { b: 2 }, 'keep meta')
+      t.deepEqual(x.links, { self: '/' }, 'keep links')
 
-  t.is(res2.id, 'b')
-  t.deepEqual(res2.body, { b: 1 }, 'keep body')
-  t.deepEqual(res2.meta, { b: 2 }, 'keep meta')
-  t.deepEqual(res2.links, { self: '/' }, 'keep links')
-  t.is(res2.stats, undefined, 'strip extra')
+      t.is(x.stats, undefined, 'strip extra')
+    }
+  )
 })
 
 test('resources array', async t => {
   const schema = {
     type: 'array',
     items: {
-      $ref: 'entity.json#/definitions/identity'
+      $ref: 'entity'
     }
   }
 
-  const res = validate(schema, [
-      { id: 'a', type: 'entities' },
-      { id: 'b' },
-      { type: 'entities' }
-    ])
-    .right()
+  validate(schema, [
+    { id: 'a', type: 'entities' },
+    { id: 'b' },
+    {
+      type: 'entities',
+      meta: { x: 1 },
+      extra: 3
+    }
+  ])
+  .cata(
+    t.fail,
+    x => {
+      t.is(x.length, 3, 'support array of resources')
 
-  t.is(res.length, 3, 'support array of resources')
-  t.is(typeof res[2].id, 'string')
+      const l = x[2]
+
+      t.not(l.id, undefined)
+      t.not(l.meta, undefined)
+      t.is(l.extra, undefined)
+    }
+  )
 })
