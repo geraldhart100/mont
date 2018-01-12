@@ -9,7 +9,6 @@
     "test": "ava"
   },
   "dependencies": {
-    "ajv-merge-patch": "^3.0.0",
     "sqem": "0.0.2",
     "yiwn": "0.0.3"
   },
