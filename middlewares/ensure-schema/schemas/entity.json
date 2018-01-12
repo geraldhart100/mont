@@ -1,20 +1,9 @@
 {
-  "$id": "entity.json",
+  "$id": "entity",
   "definitions": {
-    "identifier": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
-    },
     "identity": {
       "allOf": [
-        { "$ref": "#/definitions/identifier" },
+        { "$ref": "core#/definitions/identifier" },
         {
           "dynamicDefaults": {
             "id": "shortid"
@@ -28,54 +17,6 @@
           "additionalProperties": false
         }
       ]
-    },
-    "reference": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    "meta": {
-      "type": "object",
-      "additionalProperties": true
-    },
-    "refs": {
-      "type": "object",
-      "patternProperties": {
-        "^(.*)$": {
-          "$ref": "#/definitions/reference"
-        }
-      },
-      "additionalProperties": false
-    },
-    "members": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/identity"
-      },
-      "uniqueItems": true
-    },
-    "links": {
-      "type": "object",
-      "patternProperties": {
-        "^(.*)$": {
-          "type": "string"
-        }
-      }
-    },
-    "body": {
-      "type": "object",
-      "additionalProperties": true
     }
   },
   "type": "object",
@@ -91,16 +32,16 @@
       "default": "entities"
     },
     "body": {
-      "$ref": "#/definitions/body"
+      "$ref": "core#/definitions/body"
     },
     "meta": {
-      "$ref": "#/definitions/meta"
+      "$ref": "core#/definitions/meta"
     },
     "refs": {
-      "$ref": "#/definitions/refs"
+      "$ref": "core#/definitions/refs"
     },
     "links": {
-      "$ref": "#/definitions/links"
+      "$ref": "core#/definitions/links"
     }
   },
   "additionalProperties": false
