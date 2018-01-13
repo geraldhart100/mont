@@ -35,7 +35,7 @@ test(async t => {
 
   const next = err => {
     t.falsy(err, 'no error')
-    t.is(ctx.args.col.name, 'y')
+    t.is(ctx.col.name, 'y')
   }
 
   await mw(ctx, next)
