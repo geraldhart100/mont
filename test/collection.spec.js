@@ -178,30 +178,6 @@ test('find', async t => {
     })
 })
 
-test('count', async t => {
-  const { col } = t.context
-
-  await col
-    .count({ meta: 'count' })
-    .then(count => t.is(count, 0), 'should count')
-
-  await col
-    .insert([
-      { meta: 'count' },
-      { meta: 'count' },
-      { meta: 'count' },
-      { meta: 'count' }
-    ])
-
-  await col
-    .count({ meta: 'count' })
-    .then(count => t.is(count, 4, 'should count'))
-
-  await col
-    .count({ meta: 'count' }, { limit: 2 })
-    .then(count => t.is(count, 2, 'not ignore options'))
-})
-
 test('update', async t => {
   const { col } = t.context
 
@@ -235,23 +211,6 @@ test('update', async t => {
       t.is(res.body, 0, 'with 0')
     })
 
-})
-
-test('remove', async t => {
-  const { col } = t.context
-
-  await col
-    .insert([
-      { meta: 'remove' },
-      { meta: 'remove' }
-    ])
-
-  await col
-    .remove({ meta: 'remove' })
-
-  await col
-    .count({ meta: 'remove' })
-    .then(count => t.is(count, 0, 'remove all'))
 })
 
 test('findOneAndUpdate', async t => {
@@ -302,8 +261,8 @@ test('findOneAndDelete', async t => {
     })
 
   await col
-    .count({ meta: 'findOneAndDelete' })
-    .then(count => t.is(count, 1, 'delete only one'))
+    .find({ meta: 'findOneAndDelete' })
+    .then(docs => t.is(docs.length, 1, 'delete only one'))
 
   //
 
@@ -313,7 +272,48 @@ test('findOneAndDelete', async t => {
     .catch(err => t.is(err.status, 404, 'throw 404'))
 })
 
-test('aggregate', async t => {
+test('remove', async t => {
+  const { col } = t.context
+
+  await col
+    .insert([
+      { meta: 'remove' },
+      { meta: 'remove' }
+    ])
+
+  await col
+    .remove({ meta: 'remove' })
+
+  await col
+    .find({ meta: 'remove' })
+    .then(docs => t.is(docs.length, 0, 'remove all'))
+})
+
+test.skip('count', async t => {
+  const { col } = t.context
+
+  await col
+    .count({ meta: 'count' })
+    .then(count => t.is(count, 0), 'should count')
+
+  await col
+    .insert([
+      { meta: 'count' },
+      { meta: 'count' },
+      { meta: 'count' },
+      { meta: 'count' }
+    ])
+
+  await col
+    .count({ meta: 'count' })
+    .then(count => t.is(count, 4, 'should count'))
+
+  await col
+    .count({ meta: 'count' }, { limit: 2 })
+    .then(count => t.is(count, 2, 'not ignore options'))
+})
+
+test.skip('aggregate', async t => {
   const { col } = t.context
 
   await t.throws(col.aggregate(), Error, 'should fail properly')
@@ -338,7 +338,7 @@ test('aggregate', async t => {
     })
 })
 
-test('group', async (t) => {
+test.skip('group', async (t) => {
   const { col } = t.context
 
   await col
@@ -362,7 +362,7 @@ test('group', async (t) => {
     })
 })
 
-test('distinct', async t => {
+test.skip('distinct', async t => {
   const { col } = t.context
 
   await col
@@ -386,7 +386,7 @@ test('distinct', async t => {
     })
 })
 
-test('mapReduce', async t => {
+test.skip('mapReduce', async t => {
   const { col } = t.context
 
   // Map function
@@ -601,7 +601,7 @@ test.skip('drop', async t => {
     .catch(() => t.fail('should not throw when dropping empty'))
 })
 
-test('stats', async t => {
+test.skip('stats', async t => {
   const { col } = t.context
 
   await col.insert({ body: 'a' })
@@ -613,7 +613,7 @@ test('stats', async t => {
     })
 })
 
-test('bulkWrite', async t => {
+test.skip('bulkWrite', async t => {
   const { col } = t.context
 
   const b = [
