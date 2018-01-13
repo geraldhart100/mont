@@ -2,17 +2,11 @@ const FN = require('yiwn/full')
 
 const formatOptions = require('./options')
 
-const {
-  resolveP
-} = FN
-
 module.exports = function () {
   return (ctx, next) => {
-    const resolve = res => next(null, res)
-    const reject = err => next(err)
+    const context = formatOptions(ctx)
+    ctx.args.options = context.args.options
 
-    return resolveP(formatOptions(ctx))
-      .catch(reject)
-      .then(resolve)
+    return next()
   }
 }
