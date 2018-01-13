@@ -58,7 +58,7 @@ test('insert', async t => {
     })
 })
 
-test.only('findOne', async t => {
+test('findOne', async t => {
   const { col } = t.context
 
   const doc = await col.insert({ body: 'a' })
