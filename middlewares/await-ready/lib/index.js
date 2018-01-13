@@ -1,6 +1,6 @@
 function awaitReady () {
   return (ctx, next) => {
-    const { monkInstance, collection } = ctx
+    const { manager, collection } = ctx
 
     const getCol = db => db.collection(collection.name)
 
@@ -13,7 +13,7 @@ function awaitReady () {
       return next()
     }
 
-    return monkInstance
+    return manager
       .executeWhenOpened()
       .then(getCol)
       .then(resolve)

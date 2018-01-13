@@ -17,16 +17,16 @@ test(async t => {
     }
   }
 
-  // mock monk
+  // mock manager
 
-  const monkInstance = {
+  const manager = {
     executeWhenOpened () {
       return Promise.resolve(db)
     }
   }
 
   const ctx = {
-    monkInstance,
+    manager,
     collection: {
       name: 'y'
     },
