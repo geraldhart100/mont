@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "body": {
+      "$ref": "/core#/definitions/body"
+    },
+    "meta": {
+      "$ref": "/core#/definitions/meta"
+    },
+    "refs": {
+      "$ref": "/core#/definitions/refs"
+    },
+    "links": {
+      "$ref": "/core#/definitions/links"
+    }
+  },
+  "additionalProperties": false
+}

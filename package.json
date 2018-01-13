@@ -10,7 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.24.0",
-    "lerna": "^2.5.1",
+    "lerna": "^2.7.0",
     "mongomem": "^0.1.9",
     "monk-middleware-debug": "^0.2.0"
   },
@@ -20,7 +20,7 @@
     "monk": "^6.0.5",
     "monk-middleware-wait-for-connection": "^0.2.0",
     "mont-middlewares-ensure-id": "0.0.1",
-    "mont-middlewares-ensure-schema": "0.0.1",
+    "mont-middlewares-ensure-schema": "0.0.4",
     "mont-middlewares-format-args": "0.0.1",
     "mont-middlewares-format-options": "0.0.1",
     "yiwn": "0.0.1"
