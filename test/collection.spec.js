@@ -408,7 +408,7 @@ test('mapReduce', async t => {
     })
 })
 
-test.failing('geoHaystackSearch', async t => {
+test.skip('geoHaystackSearch', async t => {
   const { col } = t.context
 
   await col
@@ -433,7 +433,7 @@ test.failing('geoHaystackSearch', async t => {
     })
 })
 
-test('geoNear', async t => {
+test.skip('geoNear', async t => {
   const { col } = t.context
 
   await col
@@ -457,7 +457,7 @@ test('geoNear', async t => {
     })
 })
 
-test('createIndex', async t => {
+test.skip('createIndex', async t => {
   const { col } = t.context
 
   await col
@@ -509,7 +509,7 @@ test('createIndex', async t => {
     })
 })
 
-test('index', async t => {
+test.skip('index', async t => {
   const { col } = t.context
 
   await col
@@ -521,7 +521,7 @@ test('index', async t => {
     })
 })
 
-test('dropIndex', async t => {
+test.skip('dropIndex', async t => {
   const { col } = t.context
 
   await col
@@ -575,7 +575,7 @@ test('dropIndex', async t => {
     })
 })
 
-test('dropIndexes', async t => {
+test.skip('dropIndexes', async t => {
   const { col } = t.context
 
   await col
@@ -591,7 +591,7 @@ test('dropIndexes', async t => {
     })
 })
 
-test('drop', async t => {
+test.skip('drop', async t => {
   const { db } = t.context
 
   await db
