@@ -8,12 +8,14 @@ const defaultSchema = require('../schemas/default.json')
 
 const {
   assocPath,
+  dissocPath,
   curry
 } = yiwn
 
 env.addSchema(coreSchema)
 
 const ensureId = assocPath(['dynamicDefaults', 'id'], 'shortid')
+const skipId = dissocPath(['properties', 'id'])
 
 const resFromType = type => {
   const evolveSchema = assocPath(
@@ -34,7 +36,7 @@ const allFromType = type => {
     type: 'object',
     definitions: {
       data: ensureId(schema),
-      $set: schema,
+      $set: skipId(schema),
       $setOnInsert: ensureId({
         type: 'object',
         properties: {
