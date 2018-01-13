@@ -1,6 +1,7 @@
 {
   "lerna": "2.5.1",
   "packages": [
+    "core/*",
     "middlewares/*"
   ],
   "version": "0.0.2"
