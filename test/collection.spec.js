@@ -289,12 +289,11 @@ test('remove', async t => {
     .then(docs => t.is(docs.length, 0, 'remove all'))
 })
 
-test.skip('drop', async t => {
-  const { db } = t.context
+test('drop', async t => {
+  const { col, db } = t.context
 
-  await db
-    .get('dropDB-' + Date.now())
-    .drop()
-    .then(() => t.pass())
-    .catch(() => t.fail('should not throw when dropping empty'))
+  await col.insert({ body: 'a' })
+
+  await t.notThrows(col.drop())
+  await t.throws(col.drop())
 })
