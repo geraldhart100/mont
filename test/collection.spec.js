@@ -32,12 +32,10 @@ test('insert', async t => {
     })
 
   await col
-    .insert({ id: 'b', type: 'B', body: 'b' })
+    .insert({ id: 'b', body: 'b' })
     .then(doc => {
       t.is(doc._id, undefined, 'skip _id')
-
       t.is(doc.id, 'b', 'use provided id')
-      t.is(doc.type, 'B', 'use provided type')
     })
 
   await col
@@ -284,12 +282,6 @@ test('findOneAndUpdate (upsert)', async t => {
     .then(res => {
       t.is(typeof res.id, 'string')
       t.is(res.body, 'y')
-    })
-
-  await col
-    .findOneAndUpdate({ body: 'z' }, { id: 'exo', body: 'z' }, { upsert: true })
-    .then(res => {
-      t.is(res.id, 'exo')
     })
 })
 
