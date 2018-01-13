@@ -10,14 +10,13 @@ function awaitReady () {
       args.col = col
       ctx.args = args
 
-      return next(null, ctx)
+      return next()
     }
 
     return monkInstance
       .executeWhenOpened()
       .then(getCol)
       .then(resolve)
-      .catch(next)
   }
 }
 
