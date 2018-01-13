@@ -1,6 +1,6 @@
 {
   "name": "mont-middlewares-format-options",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
