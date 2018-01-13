@@ -37,10 +37,7 @@
       },
       "additionalProperties": false
     },
-    "meta": {
-      "type": ["object", "string"],
-      "additionalProperties": true
-    },
+    "meta": { },
     "members": {
       "type": "array",
       "items": {
@@ -56,10 +53,7 @@
         }
       }
     },
-    "body": {
-      "type": ["object", "string"],
-      "additionalProperties": true
-    }
+    "body": { }
   }
 }
 
