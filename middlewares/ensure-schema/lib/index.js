@@ -5,28 +5,16 @@ const cast = require('./cast')
 module.exports = function () {
 
   return async (ctx, next) => {
-    const options = {
-      context: {
-        type: ctx.collection.type
-      }
+    const resolve = args => {
+      ctx.args = args
+      return next(null, ctx)
     }
 
-    const cast = res => schema.validate(res, options)
-
-    const { data, update } = ctx.args
-
-    try {
-      if (data) {
-        ctx.args.data = await cast(data)
-      }
-
-      if (update && update.$set) {
-        ctx.args.update.$set = await cast(update.$set)
-      }
-
-      return next(null, ctx)
-    } catch (err) {
+    const reject = err => {
       return next(err)
     }
+
+    return cast(ctx.collection.type, ctx.args)
+      .cata(reject, resolve)
   }
 }
