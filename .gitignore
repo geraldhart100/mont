@@ -7,5 +7,5 @@ yarn-error.log*
 
 # Dependency directories
 node_modules
-middlewares/node_modules
-middlewares/package-lock.json
+*/middelwares/node_modules
+*/core/package-lock.json
