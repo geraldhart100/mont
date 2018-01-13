@@ -19,11 +19,10 @@
     "monet": "^0.8.10",
     "monk": "^6.0.5",
     "monk-middleware-wait-for-connection": "^0.2.0",
-    "mont-middlewares-ensure-id": "0.0.1",
     "mont-middlewares-ensure-schema": "0.0.4",
     "mont-middlewares-format-args": "0.0.1",
     "mont-middlewares-format-options": "0.0.1",
-    "yiwn": "0.0.1"
+    "yiwn": "0.0.3"
   },
   "ava": {
     "source": [
