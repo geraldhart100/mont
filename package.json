@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "http-errors": "^1.6.2",
+    "koa-compose": "^4.0.0",
     "monet": "^0.8.10",
     "monk": "^6.0.5",
     "mont-middleware-await-ready": "0.0.1",
