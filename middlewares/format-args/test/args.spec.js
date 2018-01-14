@@ -1,8 +1,53 @@
 import test from 'ava'
 
+import options from '../lib/options'
 import update from '../lib/update'
 import fields from '../lib/fields'
 import query from '../lib/query'
+
+test('options', t => {
+  t.deepEqual(
+    options(void 0),
+    {}
+  )
+
+
+  const str = 'a -b'
+  const arr = ['a', '-b']
+
+  t.deepEqual(
+    options(str),
+    {
+      fields: {
+        a: 1,
+        b: 0
+      }
+    },
+    'str fields'
+  )
+
+  t.deepEqual(
+    options(arr),
+    {
+      fields: {
+        a: 1,
+        b: 0
+      }
+    },
+    'arr fields'
+  )
+
+  t.deepEqual(
+    options({ sort: str }),
+    {
+      sort: {
+        a: 1,
+        b: -1
+      }
+    },
+    'minus -1 for sort'
+  )
+})
 
 test('fields', t => {
   t.is(fields(void 0), void 0)
