@@ -1,6 +1,6 @@
 {
-  "name": "mont-middlewares-format-options",
-  "version": "0.0.2",
+  "name": "mont-middleware-apply-schema",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
@@ -9,7 +9,8 @@
     "test": "ava"
   },
   "dependencies": {
-    "yiwn": "*"
+    "sqem": "0.0.2",
+    "yiwn": "0.0.3"
   },
   "devDependencies": {
     "ava": "^0.24.0"

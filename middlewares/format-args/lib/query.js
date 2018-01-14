@@ -1,31 +1,19 @@
-const FN = require('yiwn/full')
+const yiwn = require('yiwn/full')
 
 const {
-  identity,
-  stubUndefined,
-  isObj,
-  cond,
-  propSatisfies,
-  pick,
-  when,
-  isString,
-  assocTo,
-  reduce,
-  isNilOrEmpty,
   assoc,
-  toPairs
-} = FN
-
-/**
- * @sig
- *
- * normalize :: String -> Object
- */
-
-const normalize = when(
+  assocTo,
+  cond,
+  identity,
+  isNilOrEmpty,
+  isObj,
   isString,
-  assocTo({}, 'id')
-)
+  pick,
+  propSatisfies,
+  reduce,
+  stubUndefined,
+  toPairs
+} = yiwn
 
 /**
  * @sig

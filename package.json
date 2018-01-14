@@ -19,10 +19,9 @@
     "mont-collection": "0.0.1",
     "mont-connection": "0.0.2",
     "mont-dispatcher": "0.0.2",
-    "mont-middleware-await-ready": "0.0.5",
-    "mont-middlewares-ensure-schema": "0.0.4",
-    "mont-middlewares-format-args": "0.0.1",
-    "mont-middlewares-format-options": "0.0.2",
+    "mont-middleware-apply-schema": "0.0.1",
+    "mont-middleware-await-ready": "0.0.6",
+    "mont-middleware-format-args": "0.0.1",
     "yiwn": "0.0.3"
   },
   "ava": {

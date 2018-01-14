@@ -22,11 +22,12 @@ test('data', async t => {
     }
   }
 
-  const next = (err, ctx) => {
-    t.not(ctx.args.data.id, undefined, 'ensure id')
-    t.pass()
+  const next = err => {
+    t.falsy(err)
   }
 
-
   await cast(ctx, next)
+
+  t.not(ctx.args.data.id, undefined, 'ensure id')
+  t.is(ctx.args.data.type, 'users', 'fix type')
 })

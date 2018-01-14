@@ -1,22 +1,26 @@
-const FN = require('yiwn/full')
+const yiwn = require('yiwn/full')
 
 const {
-  partialRight,
-  isArray,
-  reduce,
-  isString,
-  split,
-  curry,
   assocTo,
   compose,
+  curry,
+  isArray,
+  isString,
+  partialRight,
+  reduce,
+  split,
   when
-} = FN
+} = yiwn
 
 /**
  * @sig
  *
  * mapTo :: v -> [a] -> { k: v }
  *
+ * @example
+ *
+ *      mapTo(1, ['a', 'b'])
+ *      // > { a: 1, b: 1 }
  */
 
 const mapTo = curry(
@@ -31,6 +35,13 @@ const mapTo = curry(
  *
  * parse :: * -> {a}
  *
+ * @example
+ *
+ *      parse('a b')
+ *      // > { a: 1, b: 1 }
+ *
+ *      parse(['a', 'b'])
+ *      // > { a: 1, b: 1 }
  */
 
 const parse = compose(

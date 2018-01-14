@@ -1,16 +1,16 @@
-const FN = require('yiwn/full')
+const yiwn = require('yiwn/full')
 
 const {
-  curry,
-  unless,
-  assocTo,
-  startsWith,
   any,
+  assocTo,
   compose,
+  curry,
+  isObj,
   keys,
-  when,
-  isObj
-} = FN
+  startsWith,
+  unless,
+  when
+} = yiwn
 
 /**
  * @sig
