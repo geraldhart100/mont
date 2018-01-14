@@ -9,10 +9,9 @@ const rejectHttp = compose(
   createError
 )
 
-const rejectHttp404 = () => rejectHttp(404)
-
-const assertNotNil = when(isNil, rejectHttp404)
+const assertNotNil = when(isNil, () => rejectHttp(404))
 
 module.exports = {
+  rejectHttp,
   assertNotNil
 }

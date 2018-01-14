@@ -1,18 +1,13 @@
-const createError = require('http-errors')
-
 const { when, has, dissoc } = require('ramda')
-const { rejectP, isArray } = require('ramda-adjunct')
+const { isArray } = require('ramda-adjunct')
+
+const { rejectHttp } = require('./helpers')
 
 const commands = require('./commands')
 
-const rejectHttp = code => rejectP(createError(code))
-
-const reject501 = () => rejectHttp(501)
-const reject409 = () => rejectHttp(409)
-
 const reject = err => {
   return err.code === 11000
-    ? reject409()
+    ? rejectHttp(409)
     : rejectHttp(err)
 }
 
@@ -27,7 +22,9 @@ const resolve = res => {
 }
 
 function execCommand (ctx) {
-  const cmd = commands[ctx.method] || reject501
+  const cmd = commands[ctx.method]
+
+  if (!cmd) return rejectHttp(501)
 
   return cmd(ctx.col, ctx.args)
     .then(resolve)

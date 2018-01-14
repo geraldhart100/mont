@@ -1,4 +1,4 @@
-const { prop } = require('yiwn/full')
+const { prop } = require('ramda')
 
 const callback = prop('ops')
 
