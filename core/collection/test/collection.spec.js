@@ -18,15 +18,15 @@ test.beforeEach(async t => {
   const conn = new Connection(url)
 
   const options = {
-    type: 'users',
-    middlewares: [
-      awaitReady(),
-      formatArgs(),
-      applySchema()
-    ]
+    type: 'users'
   }
 
   const col = new Collection(conn, 'persons', options)
+
+  col
+    .use(awaitReady())
+    .use(formatArgs())
+    .use(applySchema())
 
   t.context = { col }
 })

@@ -9,6 +9,7 @@ const {
   isNil,
   isEmpty,
   isArray,
+  isFunction,
   rejectP,
   resolveP
 } = yiwn
@@ -29,8 +30,7 @@ class Collection {
     this.name = name
     this.options = opts
 
-    this.middlewares = this.options.middlewares || []
-    delete this.options.middlewares
+    this.middlewares = []
 
     this.find = this.find.bind(this)
     this.findOne = this.findOne.bind(this)
@@ -43,6 +43,15 @@ class Collection {
 
     this.$dispatch = dispatcher(manager, this)
 
+    return this
+  }
+
+  use (fn) {
+    if (!isFunction(fn)) {
+      throw new TypeError('middleware must be a function')
+    }
+
+    this.middlewares.push(fn)
     return this
   }
 
