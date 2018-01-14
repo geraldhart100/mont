@@ -1,9 +1,9 @@
 {
-  "name": "mont-dispatcher",
-  "version": "0.0.2",
+  "name": "mont-middleware-exec-command",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "dependencies": {
-    "koa-compose": "^4.0.0",
+    "http-errors": "^1.6.2",
     "ramda": "^0.25.0",
     "ramda-adjunct": "^2.2.0"
   }

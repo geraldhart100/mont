@@ -1,6 +1,11 @@
-const { prop } = require('yiwn/full')
+const { compose, prop } = require('ramda')
 
-const callback = prop('value')
+const { assertNotNil } = require('../helpers')
+
+const callback = compose(
+  assertNotNil,
+  prop('value')
+)
 
 module.exports = function findOneAndDelete (col, args) {
   const { query, options } = args

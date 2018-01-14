@@ -1,99 +1,73 @@
-const createError = require('http-errors')
-
 const yiwn = require('yiwn/full')
 
-const dispatcher = require('mont-dispatcher')
+const Commander = require('./commander')
+
+const awaitReady = require('mont-middleware-await-ready')
+const formatArgs = require('mont-middleware-format-args')
+const applySchema = require('mont-middleware-apply-schema')
 
 const {
-  when,
-  isNil,
   isEmpty,
   isArray,
-  rejectP,
+  merge,
   resolveP
 } = yiwn
 
-const rejectHttp = (code = 400) => rejectP(createError(code))
+const defaultMiddlewares = [
+  formatArgs(),
+  applySchema(), // TODO: make optional
+  awaitReady()
+]
 
-const rejectP404 = () => rejectHttp(404)
-
-class Collection {
+class Collection extends Commander {
   constructor (manager, name, opts = {}) {
-    const type = opts.type || name
-
-    delete opts.type
-
-    this.type = type
+    super(defaultMiddlewares)
 
     this.manager = manager
     this.name = name
+    this.type = name
     this.options = opts
 
-    this.middlewares = this.options.middlewares || []
-    delete this.options.middlewares
-
-    this.find = this.find.bind(this)
-    this.findOne = this.findOne.bind(this)
-    this.findOneAndUpdate = this.findOneAndUpdate.bind(this)
-    this.findOneAndDelete = this.findOneAndDelete.bind(this)
-    this.insert = this.insert.bind(this)
-    this.update = this.update.bind(this)
-    this.remove = this.remove.bind(this)
-    this.drop = this.drop.bind(this)
-
-    this.$dispatch = dispatcher(manager, this)
-
     return this
+  }
+
+  resolveCol () {
+    return this.manager
+      .resolveDb()
+      .then(db => db.collection(this.type))
   }
 
   find (query, options) {
     const args = { query, options }
-
-    return this.$dispatch('find', args)
+    return this.dispatch('find', args)
   }
 
   findOne (query, options) {
     const args = { query, options }
-
-    const callback = when(isNil, rejectP404)
-
-    return this
-      .$dispatch('findOne', args)
-      .then(callback)
+    return this.dispatch('findOne', args)
   }
 
-  findOneAndUpdate (query, update, options) {
+  findOneAndUpdate (query, update, opts = {}) {
+    const options = merge({ returnOriginal: false }, opts)
     const args = { options, query, update }
-
-    const callback = when(isNil, rejectP404)
-
-    return this
-      .$dispatch('findOneAndUpdate', args)
-      .then(callback)
+    return this.dispatch('findOneAndUpdate', args)
   }
 
   findOneAndDelete (query, options) {
-    const args = {
-      query,
-      options
-    }
-
-    const callback = when(isNil, rejectP404)
-
-    return this
-      .$dispatch('findOneAndDelete', args)
-      .then(callback)
+    const args = { query, options }
+    return this.dispatch('findOneAndDelete', args)
   }
 
   insert (data, options) {
     if (isEmpty(data)) return resolveP([])
 
+    const args = { data, options }
+
     const method = isArray(data)
       ? 'insertMany'
       : 'insertOne'
 
-    return this
-      .$dispatch(method, { data, options })
+    return this.dispatch(method, args)
   }
 
   update (query, update, options = {}) {
@@ -103,21 +77,21 @@ class Collection {
       ? 'updateOne'
       : 'updateMany'
 
-    return this
-      .$dispatch(method, args)
+    return this.dispatch(method, args)
   }
 
   remove (query, options = {}) {
+    const args = { query, options }
+
     const method = options.multi === false
       ? 'deleteOne'
       : 'deleteMany'
 
-    return this
-      .$dispatch(method, { query, options })
+    return this.dispatch(method, args)
   }
 
   drop () {
-    return this.$dispatch('drop')
+    return this.dispatch('drop')
   }
 }
 

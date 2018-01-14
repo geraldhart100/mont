@@ -1,16 +1,13 @@
 function awaitReady (ctx, next) {
-  const { manager, collection } = ctx
-
-  const getCol = db => db.collection(collection.name)
+  const { collection } = ctx
 
   const resolve = col => {
     ctx.col = col
     return next()
   }
 
-  return manager
-    .resolveDb()
-    .then(getCol)
+  return collection
+    .resolveCol()
     .then(resolve)
 }
 
