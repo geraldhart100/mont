@@ -17,11 +17,7 @@ test.beforeEach(async t => {
 
   const conn = new Connection(url)
 
-  const options = {
-    type: 'users'
-  }
-
-  const col = new Collection(conn, 'persons', options)
+  const col = new Collection(conn, 'users')
 
   col
     .use(awaitReady())

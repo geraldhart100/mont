@@ -20,14 +20,10 @@ const rejectP404 = () => rejectHttp(404)
 
 class Collection {
   constructor (manager, name, opts = {}) {
-    const type = opts.type || name
-
-    delete opts.type
-
-    this.type = type
 
     this.manager = manager
     this.name = name
+    this.type = name
     this.options = opts
 
     this.middlewares = []
