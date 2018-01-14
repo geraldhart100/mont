@@ -1,79 +1,55 @@
-const composeM = require('koa-compose')
-
 const yiwn = require('yiwn/full')
+
+const Commander = require('./commander')
 
 const awaitReady = require('mont-middleware-await-ready')
 const formatArgs = require('mont-middleware-format-args')
 const applySchema = require('mont-middleware-apply-schema')
-const execCommand = require('mont-middleware-exec-command')
 
 const {
-  when,
-  isNil,
   isEmpty,
   isArray,
-  isFunction,
   merge,
   resolveP
 } = yiwn
 
-class Collection {
+const defaultMiddlewares = [
+  formatArgs(),
+  applySchema(), // TODO: make optional
+  awaitReady()
+]
+
+class Collection extends Commander {
   constructor (manager, name, opts = {}) {
+    super(defaultMiddlewares)
+
     this.manager = manager
     this.name = name
     this.type = name
     this.options = opts
 
-    this.middlewares = [
-      formatArgs(),
-      applySchema(),
-      awaitReady()
-    ]
-
     return this
-  }
-
-  use (fn) {
-    if (!isFunction(fn)) {
-      throw new TypeError('middleware must be a function')
-    }
-
-    this.middlewares.push(fn)
-    return this
-  }
-
-  $dispatch (method, args = {}) {
-    const context = {
-      collection: this,
-      manager: this.manager,
-      method,
-      args
-    }
-
-    const fn = composeM(this.middlewares)
-
-    return fn(context, execCommand())
   }
 
   find (query, options) {
     const args = { query, options }
-    return this.$dispatch('find', args)
+    return this.dispatch('find', args)
   }
 
   findOne (query, options) {
     const args = { query, options }
-    return this.$dispatch('findOne', args)
+    return this.dispatch('findOne', args)
   }
 
   findOneAndUpdate (query, update, opts = {}) {
     const options = merge({ returnOriginal: false }, opts)
     const args = { options, query, update }
-    return this.$dispatch('findOneAndUpdate', args)
+    return this.dispatch('findOneAndUpdate', args)
   }
 
   findOneAndDelete (query, options) {
     const args = { query, options }
-    return this.$dispatch('findOneAndDelete', args)
+    return this.dispatch('findOneAndDelete', args)
   }
 
   insert (data, options) {
@@ -85,7 +61,7 @@ class Collection {
       ? 'insertMany'
       : 'insertOne'
 
-    return this.$dispatch(method, args)
+    return this.dispatch(method, args)
   }
 
   update (query, update, options = {}) {
@@ -95,7 +71,7 @@ class Collection {
       ? 'updateOne'
       : 'updateMany'
 
-    return this.$dispatch(method, args)
+    return this.dispatch(method, args)
   }
 
   remove (query, options = {}) {
@@ -105,11 +81,11 @@ class Collection {
       ? 'deleteOne'
       : 'deleteMany'
 
-    return this.$dispatch(method, args)
+    return this.dispatch(method, args)
   }
 
   drop () {
-    return this.$dispatch('drop')
+    return this.dispatch('drop')
   }
 }
 
