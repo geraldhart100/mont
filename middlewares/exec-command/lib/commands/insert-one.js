@@ -1,4 +1,4 @@
-const { compose, head, prop } = require('yiwn/full')
+const { compose, head, prop } = require('ramda')
 
 const callback = compose(
   head,

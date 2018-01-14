@@ -9,6 +9,7 @@ import Collection from '..'
 import awaitReady from 'mont-middleware-await-ready'
 import formatArgs from 'mont-middleware-format-args'
 import applySchema from 'mont-middleware-apply-schema'
+import execCommand from 'mont-middleware-exec-command'
 
 test.before(MongoDBServer.start)
 
@@ -23,6 +24,7 @@ test.beforeEach(async t => {
     .use(awaitReady())
     .use(formatArgs())
     .use(applySchema())
+    .use(execCommand())
 
   t.context = { col }
 })

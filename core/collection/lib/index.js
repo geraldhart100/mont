@@ -1,8 +1,8 @@
+const compose = require('koa-compose')
+
 const createError = require('http-errors')
 
 const yiwn = require('yiwn/full')
-
-const dispatcher = require('mont-dispatcher')
 
 const {
   when,
@@ -10,6 +10,7 @@ const {
   isEmpty,
   isArray,
   isFunction,
+  merge,
   rejectP,
   resolveP
 } = yiwn
@@ -20,7 +21,6 @@ const rejectP404 = () => rejectHttp(404)
 
 class Collection {
   constructor (manager, name, opts = {}) {
-
     this.manager = manager
     this.name = name
     this.type = name
@@ -28,7 +28,7 @@ class Collection {
 
     this.middlewares = []
 
-    this.$dispatch = dispatcher(manager, this)
+    // this.$dispatch = dispatcher(manager, this)
 
     return this
   }
@@ -42,9 +42,21 @@ class Collection {
     return this
   }
 
+  $dispatch (method, args = {}) {
+    const context = {
+      collection: this,
+      manager: this.manager,
+      method,
+      args
+    }
+
+    const fn = compose(this.middlewares)
+
+    return fn(context)
+  }
+
   find (query, options) {
     const args = { query, options }
-
     return this.$dispatch('find', args)
   }
 
@@ -55,30 +67,17 @@ class Collection {
 
     return this
       .$dispatch('findOne', args)
-      .then(callback)
   }
 
-  findOneAndUpdate (query, update, options) {
+  findOneAndUpdate (query, update, opts = {}) {
+    const options = merge({ returnOriginal: false }, opts)
     const args = { options, query, update }
-
-    const callback = when(isNil, rejectP404)
-
-    return this
-      .$dispatch('findOneAndUpdate', args)
-      .then(callback)
+    return this.$dispatch('findOneAndUpdate', args)
   }
 
   findOneAndDelete (query, options) {
-    const args = {
-      query,
-      options
-    }
-
-    const callback = when(isNil, rejectP404)
-
-    return this
-      .$dispatch('findOneAndDelete', args)
-      .then(callback)
+    const args = { query, options }
+    return this.$dispatch('findOneAndDelete', args)
   }
 
   insert (data, options) {
