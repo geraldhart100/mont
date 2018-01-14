@@ -1,6 +1,6 @@
 {
-  "name": "mont-middlewares-ensure-schema",
-  "version": "0.0.4",
+  "name": "mont-middleware-apply-schema",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
