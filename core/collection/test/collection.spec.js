@@ -6,7 +6,9 @@ import Connection from 'mont-connection'
 
 import Collection from '..'
 
-import middlewares from '../../../lib/middlewares'
+import awaitReady from 'mont-middleware-await-ready'
+import formatArgs from 'mont-middleware-format-args'
+import applySchema from 'mont-middleware-apply-schema'
 
 test.before(MongoDBServer.start)
 
@@ -17,7 +19,11 @@ test.beforeEach(async t => {
 
   const options = {
     type: 'users',
-    middlewares
+    middlewares: [
+      awaitReady(),
+      formatArgs(),
+      applySchema()
+    ]
   }
 
   const col = new Collection(conn, 'persons', options)
