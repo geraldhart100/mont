@@ -13,7 +13,7 @@
   "dependencies": {
     "koa-compose": "^4.0.0",
     "mont-middleware-apply-schema": "0.0.1",
-    "mont-middleware-await-ready": "0.0.6",
+    "mont-middleware-await-ready": "0.0.7",
     "mont-middleware-exec-command": "0.0.1",
     "mont-middleware-format-args": "0.0.1",
     "yiwn": "0.0.3"

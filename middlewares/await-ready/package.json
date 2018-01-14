@@ -1,6 +1,6 @@
 {
   "name": "mont-middleware-await-ready",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Mont middleware to wait for db connection, etc.",
   "main": "lib/index.js",
   "scripts": {
