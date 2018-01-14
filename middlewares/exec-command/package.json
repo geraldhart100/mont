@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "lib/index.js",
   "dependencies": {
+    "http-errors": "^1.6.2",
     "ramda": "^0.25.0",
     "ramda-adjunct": "^2.2.0"
   }
