@@ -12,9 +12,9 @@ const format = evolve({
   query
 })
 
-module.exports = function () {
-  return function formatArgs (ctx, next) {
-    ctx.args = format(ctx.args)
-    return next(null, ctx)
-  }
+function formatArgs (ctx, next) {
+  ctx.args = format(ctx.args)
+  return next()
 }
+
+module.exports = () => formatArgs
