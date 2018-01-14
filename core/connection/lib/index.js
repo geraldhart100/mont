@@ -12,8 +12,7 @@ const STATE = {
 /**
  * Connection constructor.
  *
- * @param {Array|String} uri replica sets can be an array or
- * comma-separated
+ * @param {String} uri
  * @param {Object} opts
  * @return {Promise} resolve when the connection is opened
  */
@@ -23,19 +22,6 @@ class Connection extends EventEmitter {
     if (!uri) throw new Error('No connection URI provided.')
 
     super()
-
-    if (Array.isArray(uri)) {
-      if (!opts.database) {
-        for (var i = 0, l = uri.length; i < l; i++) {
-          if (!opts.database) {
-            opts.database = uri[i].replace(/([^\/])+\/?/, '') // eslint-disable-line
-          }
-          uri[i] = uri[i].replace(/\/.*/, '')
-        }
-      }
-      uri = uri.join(',') + '/' + opts.database
-      debug('repl set connection "%j" to database "%s"', uri, opts.database)
-    }
 
     if (typeof uri === 'string') {
       if (!/^mongodb:\/\//.test(uri)) {
@@ -67,25 +53,32 @@ class Connection extends EventEmitter {
 }
 
 Connection.prototype.open = function (uri, opts) {
-  MongoClient.connect(uri, opts, function (err, client) {
-    if (err || !client) {
-      this._state = STATE.CLOSED
-      this.emit('error-opening', err)
-    } else {
-      this._state = STATE.OPEN
-      this._client = client
+  const resolve = client => {
+    this._state = STATE.OPEN
+    this._client = client
 
-      // set up events
-      var self = this
-      ;['authenticated', 'close', 'error', 'fullsetup', 'parseError', 'reconnect', 'timeout'].forEach(function (eventName) {
-        self._client.on(eventName, function (e) {
-          self.emit(eventName, e)
-        })
+    // set up events
+    const self = this
+    ;['authenticated', 'close', 'error', 'fullsetup', 'parseError', 'reconnect', 'timeout'].forEach(function (eventName) {
+      self._client.on(eventName, function (e) {
+        self.emit(eventName, e)
       })
+    })
 
-      this.emit('open', client)
-    }
-  }.bind(this))
+    this.emit('open', client)
+
+    return this
+  }
+
+  const reject = err => {
+    this._state = STATE.CLOSED
+    this.emit('error-opening', err)
+  }
+
+  MongoClient
+    .connect(uri, opts)
+    .then(resolve)
+    .catch(reject)
 }
 
 /**
@@ -130,10 +123,10 @@ Connection.prototype.resolveDb = function () {
  */
 
 Connection.prototype.then = function (fn) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     this.once('open', resolve)
     this.once('error-opening', reject)
-  }.bind(this)).then(fn.bind(null, this))
+  }).then(fn.bind(null, this))
 }
 
 /**
@@ -143,9 +136,9 @@ Connection.prototype.then = function (fn) {
  */
 
 Connection.prototype.catch = function (fn) {
-  return new Promise(function (resolve) {
+  return new Promise(resolve => {
     this.once('error-opening', resolve)
-  }.bind(this)).then(fn.bind(null))
+  }).then(fn.bind(null))
 }
 
 /**
@@ -156,39 +149,27 @@ Connection.prototype.catch = function (fn) {
  * @return {Promise}
  */
 
-Connection.prototype.close = function (force, fn) {
-  if (typeof force === 'function') {
-    fn = force
-    force = false
-  }
-
-  var self = this
-  function close (resolve, client) {
-    client.close(force, function () {
-      self._state = STATE.CLOSED
-      if (fn) {
-        fn()
-      }
+Connection.prototype.close = function (force) {
+  const close = (resolve, client) => {
+    client.close(force, () => {
+      this._state = STATE.CLOSED
       resolve()
     })
   }
 
   switch (this._state) {
     case STATE.CLOSED:
-      if (fn) {
-        fn()
-      }
       return Promise.resolve()
     case STATE.OPENING:
-      return new Promise(function (resolve) {
-        self._queue.push(function (client) {
+      return new Promise(resolve => {
+        this._queue.push(client => {
           close(resolve, client)
         })
       })
     case STATE.OPEN:
     default:
-      return new Promise(function (resolve) {
-        close(resolve, self._client)
+      return new Promise(resolve => {
+        close(resolve, this._client)
       })
   }
 }
