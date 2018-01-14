@@ -17,7 +17,6 @@
   "dependencies": {
     "http-errors": "^1.6.2",
     "koa-compose": "^4.0.0",
-    "mont-dispatcher": "0.0.2",
     "yiwn": "0.0.3"
   }
 }
