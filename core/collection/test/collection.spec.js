@@ -6,11 +6,6 @@ import Connection from 'mont-connection'
 
 import Collection from '..'
 
-import awaitReady from 'mont-middleware-await-ready'
-import formatArgs from 'mont-middleware-format-args'
-import applySchema from 'mont-middleware-apply-schema'
-import execCommand from 'mont-middleware-exec-command'
-
 test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
@@ -19,12 +14,6 @@ test.beforeEach(async t => {
   const conn = new Connection(url)
 
   const col = new Collection(conn, 'users')
-
-  col
-    .use(awaitReady())
-    .use(formatArgs())
-    .use(applySchema())
-    .use(execCommand())
 
   t.context = { col }
 })

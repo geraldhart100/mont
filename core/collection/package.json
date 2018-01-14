@@ -8,15 +8,15 @@
   "devDependencies": {
     "ava": "^0.24.0",
     "mongomem": "^0.1.9",
-    "mont-connection": "0.0.2",
-    "mont-middleware-apply-schema": "0.0.1",
-    "mont-middleware-await-ready": "0.0.6",
-    "mont-middleware-exec-command": "0.0.1",
-    "mont-middleware-format-args": "0.0.1"
+    "mont-connection": "0.0.2"
   },
   "dependencies": {
     "http-errors": "^1.6.2",
     "koa-compose": "^4.0.0",
+    "mont-middleware-apply-schema": "0.0.1",
+    "mont-middleware-await-ready": "0.0.6",
+    "mont-middleware-exec-command": "0.0.1",
+    "mont-middleware-format-args": "0.0.1",
     "yiwn": "0.0.3"
   }
 }

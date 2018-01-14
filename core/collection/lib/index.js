@@ -1,8 +1,13 @@
-const compose = require('koa-compose')
+const composeM = require('koa-compose')
 
 const createError = require('http-errors')
 
 const yiwn = require('yiwn/full')
+
+const awaitReady = require('mont-middleware-await-ready')
+const formatArgs = require('mont-middleware-format-args')
+const applySchema = require('mont-middleware-apply-schema')
+const execCommand = require('mont-middleware-exec-command')
 
 const {
   when,
@@ -26,9 +31,11 @@ class Collection {
     this.type = name
     this.options = opts
 
-    this.middlewares = []
-
-    // this.$dispatch = dispatcher(manager, this)
+    this.middlewares = [
+      formatArgs(),
+      applySchema(),
+      awaitReady()
+    ]
 
     return this
   }
@@ -50,9 +57,9 @@ class Collection {
       args
     }
 
-    const fn = compose(this.middlewares)
+    const fn = composeM(this.middlewares)
 
-    return fn(context)
+    return fn(context, execCommand())
   }
 
   find (query, options) {
