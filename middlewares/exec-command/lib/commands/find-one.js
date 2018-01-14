@@ -1,4 +1,11 @@
-const { head } = require('yiwn/full')
+const { compose, head } = require('ramda')
+
+const { assertNotNil } = require('../helpers')
+
+const callback = compose(
+  assertNotNil,
+  head
+)
 
 module.exports = function findOne (col, args) {
   const { query, options } = args
@@ -7,5 +14,5 @@ module.exports = function findOne (col, args) {
     .find(query, options)
     .limit(1)
     .toArray()
-    .then(head)
+    .then(callback)
 }

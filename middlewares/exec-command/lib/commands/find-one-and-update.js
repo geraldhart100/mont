@@ -1,26 +1,16 @@
-const yiwn = require('yiwn/full')
+const { compose, prop } = require('ramda')
 
-const {
-  compose,
-  merge,
-  flip,
-  propOr,
-  prop
-} = yiwn
+const { assertNotNil } = require('../helpers')
 
-const assign = flip(merge)
-
-const getOptions = compose(
-  assign({ returnOriginal: false }),
-  propOr({}, 'options')
+const callback = compose(
+  assertNotNil,
+  prop('value')
 )
 
 module.exports = function findOneAndUpdate (col, args) {
-  const { query, update } = args
-
-  const options = getOptions(args)
+  const { query, update, options } = args
 
   return col
     .findOneAndUpdate(query, update, options)
-    .then(prop('value'))
+    .then(callback)
 }
