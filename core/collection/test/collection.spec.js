@@ -2,13 +2,11 @@ import test from 'ava'
 
 import { MongoDBServer } from 'mongomem'
 
-import debugMiddleware from 'monk-middleware-debug'
-
 import Connection from 'mont-connection'
 
-import Collection from '../lib/collection'
+import Collection from '..'
 
-import middlewares from '../lib/middlewares'
+import middlewares from '../../../lib/middlewares'
 
 test.before(MongoDBServer.start)
 

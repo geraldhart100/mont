@@ -15,9 +15,8 @@
     "monk-middleware-debug": "^0.2.0"
   },
   "dependencies": {
-    "http-errors": "^1.6.2",
-    "monet": "^0.8.10",
     "monk": "^6.0.5",
+    "mont-collection": "0.0.1",
     "mont-connection": "0.0.2",
     "mont-dispatcher": "0.0.2",
     "mont-middleware-await-ready": "0.0.5",
