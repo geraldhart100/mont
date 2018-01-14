@@ -11,7 +11,6 @@
     "mont-connection": "0.0.2"
   },
   "dependencies": {
-    "http-errors": "^1.6.2",
     "koa-compose": "^4.0.0",
     "mont-middleware-apply-schema": "0.0.1",
     "mont-middleware-await-ready": "0.0.6",

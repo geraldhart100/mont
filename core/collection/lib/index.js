@@ -1,7 +1,5 @@
 const composeM = require('koa-compose')
 
-const createError = require('http-errors')
-
 const yiwn = require('yiwn/full')
 
 const awaitReady = require('mont-middleware-await-ready')
@@ -16,13 +14,8 @@ const {
   isArray,
   isFunction,
   merge,
-  rejectP,
   resolveP
 } = yiwn
-
-const rejectHttp = (code = 400) => rejectP(createError(code))
-
-const rejectP404 = () => rejectHttp(404)
 
 class Collection {
   constructor (manager, name, opts = {}) {
@@ -69,11 +62,7 @@ class Collection {
 
   findOne (query, options) {
     const args = { query, options }
-
-    const callback = when(isNil, rejectP404)
-
-    return this
-      .$dispatch('findOne', args)
+    return this.$dispatch('findOne', args)
   }
 
   findOneAndUpdate (query, update, opts = {}) {
@@ -90,12 +79,13 @@ class Collection {
   insert (data, options) {
     if (isEmpty(data)) return resolveP([])
 
+    const args = { data, options }
+
     const method = isArray(data)
       ? 'insertMany'
       : 'insertOne'
 
-    return this
-      .$dispatch(method, { data, options })
+    return this.$dispatch(method, args)
   }
 
   update (query, update, options = {}) {
@@ -105,17 +95,17 @@ class Collection {
       ? 'updateOne'
       : 'updateMany'
 
-    return this
-      .$dispatch(method, args)
+    return this.$dispatch(method, args)
   }
 
   remove (query, options = {}) {
+    const args = { query, options }
+
     const method = options.multi === false
       ? 'deleteOne'
       : 'deleteMany'
 
-    return this
-      .$dispatch(method, { query, options })
+    return this.$dispatch(method, args)
   }
 
   drop () {
