@@ -31,6 +31,12 @@ class Collection extends Commander {
     return this
   }
 
+  resolveCol () {
+    return this.manager
+      .resolveDb()
+      .then(db => db.collection(this.type))
+  }
+
   find (query, options) {
     const args = { query, options }
     return this.dispatch('find', args)
