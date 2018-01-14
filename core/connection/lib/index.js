@@ -62,6 +62,7 @@ class Connection extends EventEmitter {
     this.open = this.open.bind(this)
     this.close = this.close.bind(this)
     this.executeWhenOpened = this.executeWhenOpened.bind(this)
+    this.resolveDb = this.resolveDb.bind(this)
   }
 }
 
@@ -107,6 +108,19 @@ Connection.prototype.executeWhenOpened = function () {
         this.open(this._connectionURI, this._connectionOptions)
       }.bind(this))
   }
+}
+
+/**
+ * Resolve `db` when opened.
+ */
+
+Connection.prototype.resolveDb = function () {
+  return this
+    .executeWhenOpened()
+    .then(client => {
+      const { dbName } = client.s.options
+      return client.db(dbName)
+    })
 }
 
 /**

@@ -65,7 +65,7 @@ test('disconnect', async t => {
 
 test('executeWhenOpened', async t => {
   const { uri } = t.context
-  const conn = new Connection(uri)
+  const conn = connect(uri)
 
   await conn
     .executeWhenOpened()
@@ -81,4 +81,14 @@ test('executeWhenOpened', async t => {
     .then(() => conn.executeWhenOpened())
     .then(() => t.is(conn._state, 'open', 'reopens'))
     .then(() => conn.close())
+})
+
+test('resolveDb', async t => {
+  const { uri } = t.context
+
+  await connect(uri)
+    .resolveDb()
+    .then(db => {
+      t.true(db instanceof mongodb.Db)
+    })
 })
