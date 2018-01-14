@@ -1,6 +1,6 @@
 {
   "name": "mont",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Monk mirror",
   "main": "lib/index.js",
   "scripts": {
