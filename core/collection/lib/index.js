@@ -28,15 +28,6 @@ class Collection {
 
     this.middlewares = []
 
-    this.find = this.find.bind(this)
-    this.findOne = this.findOne.bind(this)
-    this.findOneAndUpdate = this.findOneAndUpdate.bind(this)
-    this.findOneAndDelete = this.findOneAndDelete.bind(this)
-    this.insert = this.insert.bind(this)
-    this.update = this.update.bind(this)
-    this.remove = this.remove.bind(this)
-    this.drop = this.drop.bind(this)
-
     this.$dispatch = dispatcher(manager, this)
 
     return this
