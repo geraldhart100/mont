@@ -20,7 +20,7 @@ test(async t => {
   // mock manager
 
   const manager = {
-    executeWhenOpened () {
+    resolveDb () {
       return Promise.resolve(db)
     }
   }
