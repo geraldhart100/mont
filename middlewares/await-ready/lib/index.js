@@ -10,7 +10,7 @@ function awaitReady () {
     }
 
     return manager
-      .executeWhenOpened()
+      .resolveDb()
       .then(getCol)
       .then(resolve)
   }

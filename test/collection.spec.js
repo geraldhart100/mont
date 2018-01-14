@@ -4,19 +4,27 @@ import { MongoDBServer } from 'mongomem'
 
 import debugMiddleware from 'monk-middleware-debug'
 
-import Mont from '..'
+import Connection from 'mont-connection'
+
+import Collection from '../lib/collection'
+
+import middlewares from '../lib/middlewares'
 
 test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
   const url = await MongoDBServer.getConnectionString()
 
-  const db = new Mont(url)
-  db.addMiddleware(debugMiddleware)
+  const conn = new Connection(url)
 
-  const col = db.get('persons', { type: 'users' })
+  const options = {
+    type: 'users',
+    middlewares
+  }
 
-  t.context = { db, col }
+  const col = new Collection(conn, 'persons', options)
+
+  t.context = { col }
 })
 
 test('insert', async t => {
