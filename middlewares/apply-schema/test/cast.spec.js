@@ -2,9 +2,11 @@ import test from 'ava'
 
 import cast from '../lib/cast'
 
-test('data obj', t => {
-  const type = 'users'
+import generate from '../lib/schema-from-type'
 
+const schema = generate('users')
+
+test('data obj', t => {
   const args = {
     data: {
       body: {
@@ -15,7 +17,7 @@ test('data obj', t => {
     extra: 2
   }
 
-  cast(type, args)
+  cast(schema, args)
     .cata(
       e => t.fail(e),
       x => {
@@ -29,8 +31,6 @@ test('data obj', t => {
 })
 
 test('data arr', t => {
-  const type = 'users'
-
   const args = {
     data: [
       {
@@ -45,7 +45,7 @@ test('data arr', t => {
     ]
   }
 
-  cast(type, args)
+  cast(schema, args)
     .cata(
       e => t.fail(e),
       x => {
@@ -60,8 +60,6 @@ test('data arr', t => {
 })
 
 test('update', t => {
-  const type = 'users'
-
   const args = {
     update: {
       $set: {
@@ -72,7 +70,7 @@ test('update', t => {
     }
   }
 
-  cast(type, args)
+  cast(schema, args)
     .cata(
       e => t.fail(e),
       x => {

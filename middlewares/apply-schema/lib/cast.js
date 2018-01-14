@@ -1,37 +1,16 @@
-const yiwn = require('yiwn/full')
+const { assocPath, dissocPath } = require('yiwn/full')
 
 const sqem = require('sqem')
 const env = require('sqem/lib/ajv')
 
 const coreSchema = require('../schemas/core.json')
-const defaultSchema = require('../schemas/default.json')
-
-const {
-  assocPath,
-  dissocPath,
-  curry
-} = yiwn
 
 env.addSchema(coreSchema)
 
 const ensureId = assocPath(['dynamicDefaults', 'id'], 'shortid')
 const skipId = dissocPath(['properties', 'id'])
 
-const resFromType = type => {
-  const evolveSchema = assocPath(
-    ['properties', 'type'],
-    {
-      const: type,
-      default: type
-    }
-  )
-
-  return evolveSchema(defaultSchema)
-}
-
-const allFromType = type => {
-  const schema = resFromType(type)
-
+const extend = schema => {
   return {
     type: 'object',
     definitions: {
@@ -71,9 +50,7 @@ const allFromType = type => {
   }
 }
 
-module.exports = curry(
-  (type, data) => {
-    const schema = allFromType(type)
-    return sqem(schema, data)
-  }
-)
+module.exports = (schema, data) => {
+  const extendedSchema = extend(schema)
+  return sqem(extendedSchema, data)
+}
