@@ -46,11 +46,11 @@ class Connection extends EventEmitter {
     this._state = STATE.OPENING
 
     this._queue = []
-    this.on('open', db => {
+    this.on('open', client => {
       debug('connection opened')
       debug('emptying queries queue (%s to go)', this._queue.length)
       this._queue.forEach(function (cb) {
-        cb(db)
+        cb(client)
       })
     })
 
@@ -66,23 +66,23 @@ class Connection extends EventEmitter {
 }
 
 Connection.prototype.open = function (uri, opts) {
-  MongoClient.connect(uri, opts, function (err, db) {
-    if (err || !db) {
+  MongoClient.connect(uri, opts, function (err, client) {
+    if (err || !client) {
       this._state = STATE.CLOSED
       this.emit('error-opening', err)
     } else {
       this._state = STATE.OPEN
-      this._db = db
+      this._client = client
 
       // set up events
       var self = this
       ;['authenticated', 'close', 'error', 'fullsetup', 'parseError', 'reconnect', 'timeout'].forEach(function (eventName) {
-        self._db.on(eventName, function (e) {
+        self._client.on(eventName, function (e) {
           self.emit(eventName, e)
         })
       })
 
-      this.emit('open', db)
+      this.emit('open', client)
     }
   }.bind(this))
 }
@@ -95,7 +95,7 @@ Connection.prototype.open = function (uri, opts) {
 Connection.prototype.executeWhenOpened = function () {
   switch (this._state) {
     case STATE.OPEN:
-      return Promise.resolve(this._db)
+      return Promise.resolve(this._client)
     case STATE.OPENING:
       return new Promise(function (resolve) {
         this._queue.push(resolve)
@@ -149,8 +149,8 @@ Connection.prototype.close = function (force, fn) {
   }
 
   var self = this
-  function close (resolve, db) {
-    db.close(force, function () {
+  function close (resolve, client) {
+    client.close(force, function () {
       self._state = STATE.CLOSED
       if (fn) {
         fn()
@@ -167,14 +167,14 @@ Connection.prototype.close = function (force, fn) {
       return Promise.resolve()
     case STATE.OPENING:
       return new Promise(function (resolve) {
-        self._queue.push(function (db) {
-          close(resolve, db)
+        self._queue.push(function (client) {
+          close(resolve, client)
         })
       })
     case STATE.OPEN:
     default:
       return new Promise(function (resolve) {
-        close(resolve, self._db)
+        close(resolve, self._client)
       })
   }
 }

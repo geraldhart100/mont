@@ -1,5 +1,7 @@
 import test from 'ava'
 
+import mongodb from 'mongodb'
+
 import { MongoDBServer } from 'mongomem'
 
 import { EventEmitter } from 'events'
@@ -65,7 +67,14 @@ test('executeWhenOpened', async t => {
   const { uri } = t.context
   const conn = new Connection(uri)
 
-  return conn
+  await conn
+    .executeWhenOpened()
+    .then(client => {
+      t.true(client instanceof mongodb.MongoClient)
+    })
+
+  await conn
+    .executeWhenOpened()
     .then(() => t.is(conn._state, 'open'))
     .then(() => conn.close(true))
     .then(() => t.is(conn._state, 'closed'))
