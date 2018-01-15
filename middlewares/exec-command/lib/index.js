@@ -1,9 +1,9 @@
-const { when, has, dissoc } = require('ramda')
+const { when, has, dissoc, curry } = require('ramda')
 const { isArray } = require('ramda-adjunct')
 
 const { rejectHttp } = require('./helpers')
 
-const commands = require('./commands')
+const exec = require('./exec')
 
 const reject = err => {
   return err.code === 11000
@@ -22,11 +22,11 @@ const resolve = res => {
 }
 
 function execCommand (ctx) {
-  const cmd = commands[ctx.method]
+  const { collection, method, args } = ctx
 
-  if (!cmd) return rejectHttp(501)
-
-  return cmd(ctx.col, ctx.args)
+  return collection
+    .resolveCol()
+    .then(exec(method, args))
     .then(resolve)
     .catch(reject)
 }

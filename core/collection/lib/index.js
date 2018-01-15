@@ -2,7 +2,6 @@ const yiwn = require('yiwn/full')
 
 const Commander = require('./commander')
 
-const awaitReady = require('mont-middleware-await-ready')
 const formatArgs = require('mont-middleware-format-args')
 
 const {
@@ -13,8 +12,7 @@ const {
 } = yiwn
 
 const defaultMiddlewares = [
-  formatArgs(),
-  awaitReady()
+  formatArgs()
 ]
 
 class Collection extends Commander {
