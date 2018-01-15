@@ -1,8 +1,6 @@
 const yiwn = require('yiwn/full')
 
-const Commander = require('./commander')
-
-const formatArgs = require('mont-middleware-format-args')
+const Dispatcher = require('./dispatcher')
 
 const {
   isEmpty,
@@ -11,13 +9,9 @@ const {
   resolveP
 } = yiwn
 
-const defaultMiddlewares = [
-  formatArgs()
-]
-
-class Collection extends Commander {
+class Collection extends Dispatcher {
   constructor (manager, name, opts = {}) {
-    super(defaultMiddlewares)
+    super()
 
     this.manager = manager
     this.name = name

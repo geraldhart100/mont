@@ -2,13 +2,15 @@ const composeM = require('koa-compose')
 
 const { clone, isFunction } = require('yiwn/full')
 
-const Command = require('mont-middleware-exec-command')
+const cast = require('mont-middleware-format-args')
+const exec = require('mont-middleware-exec-command')
 
-const exec = Command()
-
-class Commander {
-  constructor (middlewares = []) {
-    this.middlewares = clone(middlewares)
+class Dispatcher {
+  constructor () {
+    this.middlewares = [
+      cast(),
+      exec()
+    ]
   }
 
   get pipe () {
@@ -32,8 +34,8 @@ class Commander {
       args
     }
 
-    return this.pipe(context, exec)
+    return this.pipe(context)
   }
 }
 
-module.exports = Commander
+module.exports = Dispatcher
