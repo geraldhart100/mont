@@ -11,7 +11,6 @@ test('options', t => {
     {}
   )
 
-
   const str = 'a -b'
   const arr = ['a', '-b']
 
