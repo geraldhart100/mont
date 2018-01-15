@@ -4,7 +4,6 @@ const Commander = require('./commander')
 
 const awaitReady = require('mont-middleware-await-ready')
 const formatArgs = require('mont-middleware-format-args')
-const applySchema = require('mont-middleware-apply-schema')
 
 const {
   isEmpty,
@@ -15,7 +14,6 @@ const {
 
 const defaultMiddlewares = [
   formatArgs(),
-  applySchema(), // TODO: make optional
   awaitReady()
 ]
 

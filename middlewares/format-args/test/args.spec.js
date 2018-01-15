@@ -1,16 +1,15 @@
 import test from 'ava'
 
-import options from '../lib/options'
-import update from '../lib/update'
-import fields from '../lib/fields'
-import query from '../lib/query'
+import options from '../lib/cast-options'
+import update from '../lib/cast-update'
+import fields from '../lib/cast-fields'
+import query from '../lib/cast-query'
 
 test('options', t => {
   t.deepEqual(
     options(void 0),
     {}
   )
-
 
   const str = 'a -b'
   const arr = ['a', '-b']
@@ -64,24 +63,6 @@ test('fields', t => {
   t.deepEqual(
     fields(arr),
     obj
-  )
-})
-
-test('update', t => {
-  t.is(update(void 0), void 0)
-
-  const plain = { id: 1 }
-  const wrapped = { $set: plain }
-
-  t.deepEqual(
-    update(wrapped),
-    wrapped
-  )
-
-  t.deepEqual(
-    update(plain),
-    wrapped,
-    'wrap non-$'
   )
 })
 

@@ -1,19 +1,24 @@
-const { evolve } = require('yiwn/full')
+const { rejectNil } = require('yiwn/full')
 
 const options = require('./options')
 const query = require('./query')
-const update = require('./update')
 const fields = require('./fields')
 
-const format = evolve({
-  options,
-  update,
-  fields,
-  query
-})
+const castData = require('./cast-data')
+const castUpdate = require('./cast-update')
 
 function formatArgs (ctx, next) {
-  ctx.args = format(ctx.args)
+  const { args, collection } = ctx
+
+  args.data = castData(collection, args.data)
+  args.update = castUpdate(collection, args.update)
+
+  args.options = options(args.options)
+  args.fields = fields(args.fields)
+  args.query = query(args.query)
+
+  ctx.args = rejectNil(args)
+
   return next()
 }
 

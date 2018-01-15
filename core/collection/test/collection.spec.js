@@ -242,13 +242,6 @@ test('update', async t => {
   const doc = await col.insert({ body: 'a' })
 
   await col
-    .update({ id: doc.id }, { $set: { body: 'b' } })
-    .then(() => col.findOne(doc.id))
-    .then(res => {
-      t.is(res.body, 'b')
-    })
-
-  await col
     .update({ id: doc.id }, { body: 'c' })
     .then(() => col.findOne(doc.id))
     .then(res => {
