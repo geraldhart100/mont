@@ -1,8 +1,8 @@
 const { rejectNil } = require('yiwn/full')
 
-const options = require('./options')
-const query = require('./query')
-const fields = require('./fields')
+const options = require('./cast-options')
+const query = require('./cast-query')
+const fields = require('./cast-fields')
 
 const castData = require('./cast-data')
 const castUpdate = require('./cast-update')
