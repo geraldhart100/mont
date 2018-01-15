@@ -1,20 +1,24 @@
 const composeM = require('koa-compose')
 
-const { clone, isFunction } = require('yiwn/full')
+const { compose, append, prepend } = require('ramda')
+const { isFunction } = require('ramda-adjunct')
 
 const cast = require('mont-middleware-format-args')
 const exec = require('mont-middleware-exec-command')
 
+const pipeM = compose(
+  composeM,
+  append(exec()),
+  prepend(cast())
+)
+
 class Dispatcher {
   constructor () {
-    this.middlewares = [
-      cast(),
-      exec()
-    ]
+    this.middlewares = []
   }
 
   get pipe () {
-    return composeM(this.middlewares)
+    return pipeM(this.middlewares)
   }
 
   use (fn) {
@@ -23,6 +27,7 @@ class Dispatcher {
     }
 
     this.middlewares.push(fn)
+
     return this
   }
 
