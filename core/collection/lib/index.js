@@ -1,13 +1,7 @@
-const yiwn = require('yiwn/full')
+const { isEmpty, merge } = require('ramda')
+const { isArray, resolveP } = require('ramda-adjunct')
 
 const Dispatcher = require('./dispatcher')
-
-const {
-  isEmpty,
-  isArray,
-  merge,
-  resolveP
-} = yiwn
 
 class Collection extends Dispatcher {
   constructor (manager, name, opts = {}) {

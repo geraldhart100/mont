@@ -14,6 +14,7 @@
     "koa-compose": "^4.0.0",
     "mont-middleware-exec-command": "0.0.2",
     "mont-middleware-format-args": "0.0.2",
-    "yiwn": "0.0.3"
+    "ramda": "^0.25.0",
+    "ramda-adjunct": "^2.3.0"
   }
 }
