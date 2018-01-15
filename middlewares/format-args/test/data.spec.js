@@ -1,15 +1,15 @@
 import test from 'ava'
 
-import parseBody from '../lib/data'
+import castBody from '../lib/cast-data'
 
-const parse = parseBody({ type: 'A' })
+const cast = castBody({ type: 'A' })
 
 test('id', t => {
   const empty = {}
   const hasId = { id: 'b' }
 
-  const resEmpty = parse(empty)
-  const resHasId = parse(hasId)
+  const resEmpty = cast(empty)
+  const resHasId = cast(hasId)
 
   t.not(resEmpty.id, undefined, 'generate id if nil')
   t.is(resHasId.id, 'b', 'use existing id')
@@ -19,8 +19,8 @@ test('type', t => {
   const empty = {}
   const typed = { type: 'B' }
 
-  const resEmpty = parse(empty)
-  const resTyped = parse(typed)
+  const resEmpty = cast(empty)
+  const resTyped = cast(typed)
 
   t.is(resEmpty.type, 'A', 'assign default type')
   t.is(resTyped.type, 'A', 'force default type')
@@ -35,7 +35,7 @@ test('extra', t => {
     extra: {}
   }
 
-  const resExtra = parse(extra)
+  const resExtra = cast(extra)
 
   t.truthy(resExtra.id, 'ensure id')
   t.truthy(resExtra.type, 'ensure typ')
@@ -49,9 +49,9 @@ test('extra', t => {
 test('multi', t => {
   const multi = [{}, {}]
 
-  const resMulti = parse(multi)
+  const resMulti = cast(multi)
 
-  t.is(resMulti.length, 2, 'parse lists')
+  t.is(resMulti.length, 2, 'cast lists')
 
   resMulti.forEach(res => t.truthy(res.id, 'format each'))
 })

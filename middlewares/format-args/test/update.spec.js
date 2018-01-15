@@ -1,18 +1,18 @@
 import test from 'ava'
 
-import parseUpdate from '../lib/update'
+import castUpdate from '../lib/cast-update'
 
-const parse = parseUpdate({ type: 'A' })
+const cast = castUpdate({ type: 'A' })
 
 test('id', t => {
   const empty = { body: {} }
-  const resEmpty = parse(empty)
+  const resEmpty = cast(empty)
 
   t.is(resEmpty.$set.id, undefined)
   t.not(resEmpty.$setOnInsert.id, undefined, 'ensure upsert id')
 
   const hasId = { id: 'b' }
-  const resHasId = parse(hasId)
+  const resHasId = cast(hasId)
 
   t.is(resHasId.$set.id, 'b', 'use existing id')
   t.is(resHasId.$setOnInsert.id, undefined, 'use existing id')
@@ -20,13 +20,13 @@ test('id', t => {
 
 test('type', t => {
   const empty = { body: {} }
-  const resEmpty = parse(empty)
+  const resEmpty = cast(empty)
 
   t.is(resEmpty.$set.type, undefined)
   t.is(resEmpty.$setOnInsert.type, 'A', 'assign default type')
 
   const typed = { type: 'B' }
-  const resTyped = parse(typed)
+  const resTyped = cast(typed)
 
   t.is(resTyped.$set.type, undefined)
   t.is(resTyped.$setOnInsert.type, 'A')
@@ -41,7 +41,7 @@ test('extra', t => {
     extra: {}
   }
 
-  const { $set } = parse(extra)
+  const { $set } = cast(extra)
 
   t.falsy($set.id, 'ensure id upsert only')
   t.falsy($set.type, 'ensure type upsert only')
