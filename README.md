@@ -24,6 +24,12 @@ db.get('colors')
 //   body: { hex: '#00ff00' } }
 ```
 
+## Test
+
+```sh
+npm test
+```
+
 ## Docs
 
 Consult [Monk API docs][monk-doc] and [Koa middleware guide][koa-doc]
