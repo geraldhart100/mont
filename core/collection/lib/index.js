@@ -1,23 +1,11 @@
-const yiwn = require('yiwn/full')
+const { isEmpty, merge } = require('ramda')
+const { isArray, resolveP } = require('ramda-adjunct')
 
-const Commander = require('./commander')
+const Dispatcher = require('./dispatcher')
 
-const formatArgs = require('mont-middleware-format-args')
-
-const {
-  isEmpty,
-  isArray,
-  merge,
-  resolveP
-} = yiwn
-
-const defaultMiddlewares = [
-  formatArgs()
-]
-
-class Collection extends Commander {
+class Collection extends Dispatcher {
   constructor (manager, name, opts = {}) {
-    super(defaultMiddlewares)
+    super()
 
     this.manager = manager
     this.name = name
