@@ -1,6 +1,6 @@
 # mont
 
-Mirror of [Monk](https://github.com/Automattic/monk/)
+MongoDB client layer with middleware support.
 
 ## Install
 
@@ -13,15 +13,24 @@ npm install mont
 ```js
 const Mont = require('mont')
 
-const db = new Mont('localhost/app')
+const db = Mont('localhost/app')
 
-const col = db.get('colors')
+db.get('colors')
+  .insert({ id: 'blue', body: { hex: '#00ff00' } })
+  .then(console.log)
 
-col
-  .create({ id: 'blue', body: '#00ff00' })
-  .then(console.log) // { id: 'blue', body: '#00ff00' }
+// { id: 'blue',
+//   type: 'colors',
+//   body: { hex: '#00ff00' } }
 ```
 
 ## Docs
 
-Consult [Monk's docs](https://automattic.github.io/monk/)
+Consult [Monk API docs][monk-doc] and [Koa middleware guide][koa-doc]
+
+[monk-doc]: https://automattic.github.io/monk/
+[koa-doc]: https://github.com/koajs/koa/blob/master/docs/guide.md
+
+## License
+
+MIT
