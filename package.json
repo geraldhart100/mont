@@ -1,7 +1,7 @@
 {
   "name": "mont",
   "description": "MongoDB client layer with middleware support.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geraldhart100/mont.git"
