@@ -24,7 +24,9 @@
   "author": "Gerald Hart",
   "license": "MIT",
   "devDependencies": {
-    "lerna": "^2.7.0"
+    "ava": "^0.24.0",
+    "lerna": "^2.7.0",
+    "mongomem": "^0.1.9"
   },
   "dependencies": {
     "mont-manager": "^0.1.0"
