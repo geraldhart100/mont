@@ -1,6 +1,6 @@
 {
   "name": "mont-middleware-exec-command",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "dependencies": {
     "http-errors": "^1.6.2",
