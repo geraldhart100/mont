@@ -1,0 +1,19 @@
+{
+  "name": "mont-middleware-format-args",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "dependencies": {
+    "monet": "^0.8.10",
+    "yiwn": "0.0.3",
+    "yiwn-shortid": "0.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.24.0"
+  }
+}

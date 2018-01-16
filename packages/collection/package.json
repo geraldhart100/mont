@@ -1,0 +1,20 @@
+{
+  "name": "mont-collection",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "mongomem": "^0.1.9",
+    "mont-manager": "^0.1.0"
+  },
+  "dependencies": {
+    "koa-compose": "^4.0.0",
+    "mont-middleware-exec-command": "^0.1.0",
+    "mont-middleware-format-args": "^0.1.0",
+    "ramda": "^0.25.0",
+    "ramda-adjunct": "^2.3.0"
+  }
+}

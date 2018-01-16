@@ -1,7 +1,7 @@
 {
-  "lerna": "2.5.1",
+  "lerna": "2.7.0",
   "packages": [
-    "middlewares/*"
+    "packages/*"
   ],
-  "version": "0.0.1"
+  "version": "0.1.0"
 }

@@ -1,0 +1,17 @@
+{
+  "name": "mont-manager",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "mongomem": "^0.1.9"
+  },
+  "dependencies": {
+    "debug": "^3.1.0",
+    "mongodb": "^3.0.1",
+    "mont-collection": "^0.1.0"
+  }
+}
