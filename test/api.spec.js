@@ -2,18 +2,16 @@ import test from 'ava'
 
 import { MongoDBServer } from 'mongomem'
 
-import Connection from 'mont-manager/lib/connection'
-
-import Collection from '..'
+import mont from '..'
 
 test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
   const url = await MongoDBServer.getConnectionString()
 
-  const conn = new Connection(url)
+  const db = mont(url)
 
-  const col = new Collection(conn, 'users')
+  const col = db.get('users')
 
   t.context = { col }
 })
