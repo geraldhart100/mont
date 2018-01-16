@@ -1,4 +1,5 @@
 {
+  "main": "index.js",
   "scripts": {
     "test": "ava"
   },
@@ -6,5 +7,26 @@
   "license": "MIT",
   "devDependencies": {
     "lerna": "^2.7.0"
-  }
+  },
+  "dependencies": {
+    "mont-manager": "0.0.1"
+  },
+  "name": "mont",
+  "description": "Mirror of [Monk](https://github.com/Automattic/monk/)",
+  "version": "0.0.5",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geraldhart100/mont.git"
+  },
+  "keywords": [
+    "mont",
+    "mongodb",
+    "mongo",
+    "driver",
+    "middleware"
+  ],
+  "bugs": {
+    "url": "https://github.com/geraldhart100/mont/issues"
+  },
+  "homepage": "https://github.com/geraldhart100/mont#readme"
 }
