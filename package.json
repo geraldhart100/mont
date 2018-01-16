@@ -1,19 +1,7 @@
 {
-  "main": "index.js",
-  "scripts": {
-    "test": "ava"
-  },
-  "author": "Gerald Hart",
-  "license": "MIT",
-  "devDependencies": {
-    "lerna": "^2.7.0"
-  },
-  "dependencies": {
-    "mont-manager": "0.0.3"
-  },
   "name": "mont",
-  "description": "Mirror of [Monk](https://github.com/Automattic/monk/)",
-  "version": "0.0.5",
+  "description": "MongoDB client layer with middleware support.",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geraldhart100/mont.git"
@@ -28,5 +16,17 @@
   "bugs": {
     "url": "https://github.com/geraldhart100/mont/issues"
   },
-  "homepage": "https://github.com/geraldhart100/mont#readme"
+  "homepage": "https://github.com/geraldhart100/mont#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "author": "Gerald Hart",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^2.7.0"
+  },
+  "dependencies": {
+    "mont-manager": "^0.1.0"
+  }
 }
