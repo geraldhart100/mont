@@ -6,7 +6,7 @@ import { MongoDBServer } from 'mongomem'
 
 import { EventEmitter } from 'events'
 
-import Connection from '..'
+import Connection from '../lib/connection'
 
 const connect = (...args) => new Connection(...args)
 

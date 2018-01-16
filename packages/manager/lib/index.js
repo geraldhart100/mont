@@ -1,5 +1,6 @@
-const Connection = require('mont-connection')
 const Collection = require('mont-collection')
+
+const Connection = require('./connection')
 
 class Manager extends Connection {
   constructor (uri) {

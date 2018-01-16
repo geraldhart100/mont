@@ -2,7 +2,7 @@ import test from 'ava'
 
 import { MongoDBServer } from 'mongomem'
 
-import Connection from 'mont-connection'
+import Connection from 'mont-manager/lib/connection'
 
 import Collection from '..'
 

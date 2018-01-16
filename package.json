@@ -9,7 +9,7 @@
     "lerna": "^2.7.0"
   },
   "dependencies": {
-    "mont-manager": "0.0.1"
+    "mont-manager": "0.0.3"
   },
   "name": "mont",
   "description": "Mirror of [Monk](https://github.com/Automattic/monk/)",
