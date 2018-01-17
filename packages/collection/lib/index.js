@@ -42,6 +42,18 @@ class Collection extends Dispatcher {
     return this.dispatch('findOneAndDelete', args)
   }
 
+  findOneOrCreate (query, update, opts = {}) {
+    const defaults = {
+      upsert: true,
+      returnOriginal: false
+    }
+
+    const options = merge(opts, defaults)
+
+    const args = { query, update, options }
+    return this.dispatch('findOneAndUpdate', args)
+  }
+
   insert (data, options) {
     if (isEmpty(data)) return resolveP([])
 
