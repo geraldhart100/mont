@@ -43,9 +43,14 @@ class Collection extends Dispatcher {
   }
 
   findOneOrCreate (query, update, opts = {}) {
-    const options = merge(opts, { upsert: true })
+    const defaults = {
+      upsert: true,
+      returnOriginal: false
+    }
 
-    const args = { query, update, options}
+    const options = merge(opts, defaults)
+
+    const args = { query, update, options }
     return this.dispatch('findOneAndUpdate', args)
   }
 
