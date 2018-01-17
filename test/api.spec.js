@@ -193,16 +193,14 @@ test('findOneAndUpdate', async t => {
 
 })
 
-test('findOneAndUpdate (upsert)', async t => {
+test('findOneOrCreate', async t => {
   const { col } = t.context
 
-  // Upsert
-
   await col
-    .findOneAndUpdate({ body: 'x' }, { body: 'y' }, { upsert: true })
+    .findOneOrCreate({ body: 'x' }, { body: 'y' })
     .then(res => {
       t.is(typeof res.id, 'string')
-      t.is(res.body, 'y')
+      t.is(res.body, 'y', 'upsert')
     })
 })
 
