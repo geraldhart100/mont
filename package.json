@@ -1,7 +1,7 @@
 {
   "name": "mont",
   "description": "MongoDB client layer with middleware support.",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geraldhart100/mont.git"
@@ -29,6 +29,6 @@
     "mongomem": "^0.1.9"
   },
   "dependencies": {
-    "mont-manager": "^0.1.0"
+    "mont-manager": "^0.1.3"
   }
 }
