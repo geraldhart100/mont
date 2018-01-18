@@ -6,7 +6,8 @@
     "test": "ava"
   },
   "devDependencies": {
-    "ava": "^0.24.0"
+    "ava": "^0.24.0",
+    "mongodb": "^3.0.1"
   },
   "dependencies": {
     "koa-compose": "^4.0.0",
