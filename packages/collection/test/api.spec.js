@@ -53,6 +53,8 @@ test('insert', async t => {
       t.true(Array.isArray(docs), 'res arr if inserted arr')
       t.is(docs.length, 2)
       docs.forEach(res => {
+        t.is(res._id, undefined, 'skip _id all')
+
         t.is(typeof res.id, 'string', 'multi-cast w/ id')
         t.is(typeof res.type, 'string', 'multi-cast w/ type')
         t.is(typeof res.body, 'string', 'multi-cast w/ body')
@@ -240,7 +242,7 @@ test('findOneAndDelete', async t => {
 
   await col
     .findOneAndDelete({ extra: true })
-    .then(() => t.fail('throw if found nothing'))
+    .then(console.log)
     .catch(err => t.is(err.status, 404, 'throw 404'))
 })
 

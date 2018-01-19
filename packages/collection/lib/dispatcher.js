@@ -4,11 +4,9 @@ const { compose, append, prepend } = require('ramda')
 const { isFunction } = require('ramda-adjunct')
 
 const cast = require('mont-middleware-format-args')
-const exec = require('mont-middleware-exec-command')
 
 const pipeM = compose(
   composeM,
-  append(exec()),
   prepend(cast())
 )
 
@@ -31,15 +29,22 @@ class Dispatcher {
     return this
   }
 
-  dispatch (method, args = {}) {
+  dispatch (fn, args = {}) {
     const context = {
       collection: this,
       manager: this.manager,
-      method,
+      method: fn.name,
       args
     }
 
-    return this.pipe(context)
+    const callback = (ctx, next) => {
+      const { args } = ctx
+      return this
+        .resolveCol()
+        .then(col => fn(args, col))
+    }
+
+    return this.pipe(context, callback)
   }
 }
 
