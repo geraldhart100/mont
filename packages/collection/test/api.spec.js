@@ -69,7 +69,7 @@ test('insert', async t => {
     })
 })
 
-test.only('find', async t => {
+test('find', async t => {
   const { col } = t.context
 
   await col
@@ -249,7 +249,7 @@ test('findOneAndDelete', async t => {
 
   await col
     .find({ meta: 'findOneAndDelete' })
-    .then(docs => t.is(docs.length, 1, 'delete only one'))
+    .then(res => t.is(res.meta.total, 1, 'delete only one'))
 
   //
 
@@ -301,7 +301,7 @@ test('remove', async t => {
 
   await col
     .find({ meta: 'remove' })
-    .then(docs => t.is(docs.length, 0, 'remove all'))
+    .then(res => t.is(res.meta.total, 0, 'remove all'))
 })
 
 test('drop', async t => {
