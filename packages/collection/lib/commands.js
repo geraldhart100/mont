@@ -58,6 +58,12 @@ function insertMany (args, col) {
 function find (args, col) {
   const { query, options } = args
 
+  // pick identifier
+  options.fields = {
+    id: 1,
+    type: 1
+  }
+
   return col
     .find(query, options)
     .toArray()
