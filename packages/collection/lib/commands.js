@@ -1,6 +1,6 @@
 const R = require('ramda')
-
 const RA = require('ramda-adjunct')
+const WN = require('yiwn')
 
 const createError = require('http-errors')
 
@@ -60,14 +60,25 @@ function find (args, col) {
 
   // pick identifier
   options.fields = {
+    _id: 0,
     id: 1,
     type: 1
   }
 
-  return col
+  const find = () => col
     .find(query, options)
     .toArray()
-    .then(R.map(skipOid))
+
+  const resolve = (members) => {
+    return {
+      members
+    }
+  }
+
+  return WN.allP([
+      find()
+    ])
+    .then(R.apply(resolve))
 }
 
 function findOne (args, col) {

@@ -73,12 +73,19 @@ test.only('find', async t => {
   const { col } = t.context
 
   await col
-    .insert({ body: 'a' })
+    .insert([
+      { body: 'a' },
+      { body: 'b' }
+    ])
 
   await col
     .find()
     .then(docs => {
-      docs.forEach(doc => {
+      const { members } = docs
+
+      t.is(members.length, 2)
+
+      members.forEach(doc => {
         t.is(doc._id, undefined, 'skip _id')
         t.is(doc.body, undefined, 'pick only id and type')
 
@@ -91,45 +98,17 @@ test.only('find', async t => {
 
   await col
     .insert([
-      { id: 'ma1', meta: { a: 1 } },
-      { id: 'ma2', meta: { a: 2 } }
-    ])
-
-  await col
-    .find({ 'meta.a': 1 })
-    .then(docs => {
-      t.is(docs.length, 1, 'with nested query')
-      t.is(docs[0].id, 'ma1')
-    })
-
-  // nested array
-
-  await col
-    .insert([
-      { id: 'ba1', body: [{ a: 1 }] },
-      { id: 'ba2', body: [{ a: 2 }] }
-    ])
-
-  await col
-    .find({ 'body.a': 1 })
-    .then(docs => {
-      t.is(docs.length, 1, 'with nested array query')
-      t.is(docs[0].id, 'ba1')
-    })
-
-  //
-
-  await col
-    .insert([
       { id: 'sort1', meta: 'sort', body: { a: 1, b: 2 } },
       { id: 'sort2', meta: 'sort', body: { a: 1, b: 1 } }
     ])
 
   await col
     .find({ meta: 'sort' }, { sort: '-body.a body.b' })
-    .then(docs => {
-      t.is(docs[0].id, 'sort2', 'should sort')
-      t.is(docs[1].id, 'sort1', 'should sort')
+    .then(res => {
+      const { members } = res
+
+      t.is(members[0].id, 'sort2', 'should sort')
+      t.is(members[1].id, 'sort1', 'should sort')
     })
 
   //
@@ -156,8 +135,10 @@ test.only('find', async t => {
         }
       }
     })
-    .then(docs => {
-      t.is(docs.length, 2, 'find by refs')
+    .then(res => {
+      const { members } = res
+
+      t.is(members.length, 2, 'find by refs')
     })
 })
 
