@@ -1,6 +1,6 @@
 const R = require('ramda')
-
 const RA = require('ramda-adjunct')
+const WN = require('yiwn')
 
 const createError = require('http-errors')
 
@@ -58,10 +58,42 @@ function insertMany (args, col) {
 function find (args, col) {
   const { query, options } = args
 
-  return col
-    .find(query, options)
+  // pick identifier
+  const fields = {
+    _id: 0,
+    id: 1,
+    type: 1
+  }
+
+  const limit = options.limit || Number.MIN_SAFE_INTEGER
+  const offset = options.offset || 0
+
+  const pMembers = col
+    .find(query, { fields })
+    .sort(options.sort)
+    .skip(offset)
+    .limit(limit)
     .toArray()
-    .then(R.map(skipOid))
+
+  const pTotal = col
+    .count(query)
+
+  const resolve = (members, total) => {
+    const meta = {
+      total,
+      limit,
+      offset
+    }
+
+    return {
+      meta,
+      members
+    }
+  }
+
+  return WN
+    .allP([ pMembers, pTotal ])
+    .then(R.apply(resolve))
 }
 
 function findOne (args, col) {

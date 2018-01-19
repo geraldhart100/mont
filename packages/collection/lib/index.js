@@ -23,7 +23,8 @@ class Collection extends Dispatcher {
 
   find (query, options) {
     const args = { query, options }
-    return this.dispatch(M.find, args)
+    return this
+      .dispatch(M.find, args)
   }
 
   findOne (query, options) {
