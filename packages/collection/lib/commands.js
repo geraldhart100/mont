@@ -59,14 +59,20 @@ function find (args, col) {
   const { query, options } = args
 
   // pick identifier
-  options.fields = {
+  const fields = {
     _id: 0,
     id: 1,
     type: 1
   }
 
-  const find = () => col
-    .find(query, options)
+  const limit = options.limit || Number.MIN_SAFE_INTEGER
+  const offset = options.offset || 0
+
+  const pMembers = col
+    .find(query, { fields })
+    .sort(options.sort)
+    .limit(limit)
+    .skip(offset)
     .toArray()
 
   const resolve = (members) => {
@@ -75,9 +81,8 @@ function find (args, col) {
     }
   }
 
-  return WN.allP([
-      find()
-    ])
+  return WN
+    .allP([ pMembers ])
     .then(R.apply(resolve))
 }
 

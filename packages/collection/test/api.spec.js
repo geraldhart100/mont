@@ -112,6 +112,27 @@ test.only('find', async t => {
     })
 
   //
+  await col
+    .insert([
+      { id: 'page1', meta: 'page', body: 1 },
+      { id: 'page2', meta: 'page', body: 2 },
+      { id: 'page3', meta: 'page', body: 3 },
+      { id: 'page4', meta: 'page', body: 4 }
+    ])
+
+  await col
+    .find({ meta: 'page' }, { limit: 2, offset: 1 })
+    .then(res => {
+      const { members } = res
+
+      t.is(members.length, 2, 'limit')
+
+      t.deepEqual(
+        members,
+        [ { id: 'page2', type: 'users' },
+          { id: 'page3', type: 'users' } ]
+      )
+    })
 
   const refs = {
     a: { id: 'a', type: 'a' },
