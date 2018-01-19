@@ -3,14 +3,14 @@ const { isArray, resolveP } = require('ramda-adjunct')
 
 const Dispatcher = require('./dispatcher')
 
+const M = require('./commands')
+
 class Collection extends Dispatcher {
-  constructor (manager, name, opts = {}) {
+  constructor (manager, type) {
     super()
 
     this.manager = manager
-    this.name = name
-    this.type = name
-    this.options = opts
+    this.type = type
 
     return this
   }
@@ -23,23 +23,25 @@ class Collection extends Dispatcher {
 
   find (query, options) {
     const args = { query, options }
-    return this.dispatch('find', args)
+    return this
+      .dispatch(M.find, args)
   }
 
   findOne (query, options) {
     const args = { query, options }
-    return this.dispatch('findOne', args)
+    return this.dispatch(M.findOne, args)
+  }
+
+  findOneAndDelete (query, options) {
+    const args = { query, options }
+    return this.dispatch(M.findOneAndDelete, args)
   }
 
   findOneAndUpdate (query, update, opts = {}) {
     const options = merge({ returnOriginal: false }, opts)
     const args = { options, query, update }
-    return this.dispatch('findOneAndUpdate', args)
-  }
 
-  findOneAndDelete (query, options) {
-    const args = { query, options }
-    return this.dispatch('findOneAndDelete', args)
+    return this.dispatch(M.findOneAndUpdate, args)
   }
 
   findOneOrCreate (query, update, opts = {}) {
@@ -51,7 +53,8 @@ class Collection extends Dispatcher {
     const options = merge(opts, defaults)
 
     const args = { query, update, options }
-    return this.dispatch('findOneAndUpdate', args)
+
+    return this.dispatch(M.findOneAndUpdate, args)
   }
 
   insert (data, options) {
@@ -60,8 +63,8 @@ class Collection extends Dispatcher {
     const args = { data, options }
 
     const method = isArray(data)
-      ? 'insertMany'
-      : 'insertOne'
+      ? M.insertMany
+      : M.insertOne
 
     return this.dispatch(method, args)
   }
@@ -70,8 +73,8 @@ class Collection extends Dispatcher {
     const args = { query, update, options }
 
     const method = options.multi === false
-      ? 'updateOne'
-      : 'updateMany'
+      ? M.updateOne
+      : M.updateMany
 
     return this.dispatch(method, args)
   }
@@ -80,14 +83,14 @@ class Collection extends Dispatcher {
     const args = { query, options }
 
     const method = options.multi === false
-      ? 'deleteOne'
-      : 'deleteMany'
+      ? M.deleteOne
+      : M.deleteMany
 
     return this.dispatch(method, args)
   }
 
   drop () {
-    return this.dispatch('drop')
+    return this.dispatch(M.drop)
   }
 }
 

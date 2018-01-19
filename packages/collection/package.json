@@ -1,18 +1,20 @@
 {
   "name": "mont-collection",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "lib/index.js",
   "scripts": {
     "test": "ava"
   },
   "devDependencies": {
-    "ava": "^0.24.0"
+    "ava": "^0.24.0",
+    "mongodb": "^3.0.1"
   },
   "dependencies": {
+    "http-errors": "^1.6.2",
     "koa-compose": "^4.0.0",
-    "mont-middleware-exec-command": "^0.1.0",
     "mont-middleware-format-args": "^0.1.0",
     "ramda": "^0.25.0",
-    "ramda-adjunct": "^2.3.0"
+    "ramda-adjunct": "^2.3.0",
+    "yiwn": "0.0.3"
   }
 }

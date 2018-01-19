@@ -29,6 +29,6 @@
     "mongomem": "^0.1.9"
   },
   "dependencies": {
-    "mont-manager": "^0.1.4"
+    "mont-manager": "^0.1.5"
   }
 }

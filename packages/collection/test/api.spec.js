@@ -2,16 +2,28 @@ import test from 'ava'
 
 import { MongoDBServer } from 'mongomem'
 
-import mont from '..'
+import { MongoClient } from 'mongodb'
+
+import Collection from '..'
 
 test.before(MongoDBServer.start)
 
 test.beforeEach(async t => {
   const url = await MongoDBServer.getConnectionString()
 
-  const db = mont(url)
+  const dbName = url.split('/').pop()
 
-  const col = db.get('users')
+  const awaitDb = MongoClient
+    .connect(url)
+    .then(client => client.db(dbName))
+
+  const manager = {
+    resolveDb () {
+      return awaitDb
+    }
+  }
+
+  const col = new Collection(manager, 'users')
 
   t.context = { col }
 })
@@ -41,6 +53,8 @@ test('insert', async t => {
       t.true(Array.isArray(docs), 'res arr if inserted arr')
       t.is(docs.length, 2)
       docs.forEach(res => {
+        t.is(res._id, undefined, 'skip _id all')
+
         t.is(typeof res.id, 'string', 'multi-cast w/ id')
         t.is(typeof res.type, 'string', 'multi-cast w/ type')
         t.is(typeof res.body, 'string', 'multi-cast w/ body')
@@ -59,13 +73,24 @@ test('find', async t => {
   const { col } = t.context
 
   await col
-    .insert({ body: 'a' })
+    .insert([
+      { body: 'a' },
+      { body: 'b' }
+    ])
 
   await col
     .find()
     .then(docs => {
-      docs.forEach(doc => {
+      const { members } = docs
+
+      t.is(members.length, 2)
+
+      members.forEach(doc => {
         t.is(doc._id, undefined, 'skip _id')
+        t.is(doc.body, undefined, 'pick only id and type')
+
+        t.not(doc.id, undefined)
+        t.not(doc.type, undefined)
       })
     })
 
@@ -73,48 +98,48 @@ test('find', async t => {
 
   await col
     .insert([
-      { meta: { a: 1 } },
-      { meta: { a: 2 } }
-    ])
-
-  await col
-    .find({ 'meta.a': 1 })
-    .then(docs => {
-      t.is(docs.length, 1, 'with nested query')
-      t.is(docs[0].meta.a, 1)
-    })
-
-  // nested array
-
-  await col
-    .insert([
-      { body: [{ a: 1 }] },
-      { body: [{ a: 2 }] }
-    ])
-
-  await col
-    .find({ 'body.a': 1 })
-    .then(docs => {
-      t.is(docs.length, 1, 'with nested array query')
-      t.is(docs[0].body[0].a, 1)
-    })
-
-  //
-
-  await col
-    .insert([
-      { meta: 'sort', body: { a: 1, b: 2 } },
-      { meta: 'sort', body: { a: 1, b: 1 } }
+      { id: 'sort1', meta: 'sort', body: { a: 1, b: 2 } },
+      { id: 'sort2', meta: 'sort', body: { a: 1, b: 1 } }
     ])
 
   await col
     .find({ meta: 'sort' }, { sort: '-body.a body.b' })
-    .then(docs => {
-      t.is(docs[0].body.b, 1, 'should sort')
-      t.is(docs[1].body.b, 2, 'should sort')
+    .then(res => {
+      const { members } = res
+
+      t.is(members[0].id, 'sort2', 'should sort')
+      t.is(members[1].id, 'sort1', 'should sort')
     })
 
   //
+  await col
+    .insert([
+      { id: 'page1', meta: 'page', body: 1 },
+      { id: 'page2', meta: 'page', body: 2 },
+      { id: 'page3', meta: 'page', body: 3 },
+      { id: 'page4', meta: 'page', body: 4 }
+    ])
+
+  await col
+    .find({ meta: 'page' }, { limit: 2, offset: 1 })
+    .then(res => {
+      const { members } = res
+
+      t.is(members.length, 2, 'limit')
+
+      t.deepEqual(
+        members,
+        [ { id: 'page2', type: 'users' },
+          { id: 'page3', type: 'users' } ]
+      )
+    })
+
+  await col
+    .find({ meta: 'page' }, { limit: 2, offset: 2 })
+    .then(res => {
+      t.is(res.meta.total, 4, 'overall total for query')
+      t.is(res.meta.limit, 2)
+    })
 
   const refs = {
     a: { id: 'a', type: 'a' },
@@ -138,8 +163,10 @@ test('find', async t => {
         }
       }
     })
-    .then(docs => {
-      t.is(docs.length, 2, 'find by refs')
+    .then(res => {
+      const { members } = res
+
+      t.is(members.length, 2, 'find by refs')
     })
 })
 
@@ -222,13 +249,13 @@ test('findOneAndDelete', async t => {
 
   await col
     .find({ meta: 'findOneAndDelete' })
-    .then(docs => t.is(docs.length, 1, 'delete only one'))
+    .then(res => t.is(res.meta.total, 1, 'delete only one'))
 
   //
 
   await col
     .findOneAndDelete({ extra: true })
-    .then(() => t.fail('throw if found nothing'))
+    .then(console.log)
     .catch(err => t.is(err.status, 404, 'throw 404'))
 })
 
@@ -274,7 +301,7 @@ test('remove', async t => {
 
   await col
     .find({ meta: 'remove' })
-    .then(docs => t.is(docs.length, 0, 'remove all'))
+    .then(res => t.is(res.meta.total, 0, 'remove all'))
 })
 
 test('drop', async t => {
