@@ -134,6 +134,13 @@ test.only('find', async t => {
       )
     })
 
+  await col
+    .find({ meta: 'page' }, { limit: 2, offset: 2 })
+    .then(res => {
+      t.is(res.meta.total, 4, 'overall total for query')
+      t.is(res.meta.limit, 2)
+    })
+
   const refs = {
     a: { id: 'a', type: 'a' },
     b: { id: 'b', type: 'b' }

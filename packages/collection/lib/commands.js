@@ -71,18 +71,28 @@ function find (args, col) {
   const pMembers = col
     .find(query, { fields })
     .sort(options.sort)
-    .limit(limit)
     .skip(offset)
+    .limit(limit)
     .toArray()
 
-  const resolve = (members) => {
+  const pTotal = col
+    .count(query)
+
+  const resolve = (members, total) => {
+    const meta = {
+      total,
+      limit,
+      offset
+    }
+
     return {
+      meta,
       members
     }
   }
 
   return WN
-    .allP([ pMembers ])
+    .allP([ pMembers, pTotal ])
     .then(R.apply(resolve))
 }
 
