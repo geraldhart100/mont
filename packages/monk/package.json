@@ -1,0 +1,33 @@
+{
+  "name": "mont",
+  "description": "MongoDB client layer with middleware support.",
+  "version": "0.1.5",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geraldhart100/mont.git"
+  },
+  "keywords": [
+    "mont",
+    "mongodb",
+    "mongo",
+    "driver",
+    "middleware"
+  ],
+  "bugs": {
+    "url": "https://github.com/geraldhart100/mont/issues"
+  },
+  "homepage": "https://github.com/geraldhart100/mont#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "author": "Gerald Hart",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "mongomem": "^0.1.9"
+  },
+  "dependencies": {
+    "mont-manager": "^0.1.5"
+  }
+}
